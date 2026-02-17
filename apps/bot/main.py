@@ -10,7 +10,7 @@ from aiogram.webhook.aiohttp_server import SimpleRequestHandler, setup_applicati
 from aiogram.enums import ParseMode
 from dotenv import load_dotenv
 
-from handlers import start, product_inquiry, escalation
+from handlers import start, product_inquiry, escalation, callbacks
 from services.api_client import APIClient
 from services.prompt_manager import PromptManager
 
@@ -73,6 +73,7 @@ async def on_shutdown(bot: Bot) -> None:
 def register_handlers(dp: Dispatcher) -> None:
     """Register all handlers"""
     dp.include_router(start.router)
+    dp.include_router(callbacks.router)  # Register callbacks before product_inquiry
     dp.include_router(product_inquiry.router)
     dp.include_router(escalation.router)
 
