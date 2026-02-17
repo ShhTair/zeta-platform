@@ -39,11 +39,10 @@ def is_vague_query(query: str) -> bool:
 @router.message(ConversationState.product_inquiry, F.text)
 async def handle_product_inquiry(message: types.Message, state: FSMContext):
     """Handle product inquiry with smart clarifying questions"""
-    api_client = message.bot["api_client"]
-    prompt_manager = message.bot["prompt_manager"]
+    api_client = message.bot.get("api_client")
     
     query = message.text
-    city_id = prompt_manager.city_id
+    city_id = "default"  # Default city for now
     
     # Check if query is too vague
     if is_vague_query(query):
@@ -65,7 +64,7 @@ async def handle_product_inquiry(message: types.Message, state: FSMContext):
         return
     
     # Query is specific enough - proceed with search
-    await _perform_product_search(message, state, query, api_client, prompt_manager, city_id)
+    await _perform_product_search(message, state, query, api_client, city_id)
 
 
 async def _perform_product_search(
@@ -73,17 +72,13 @@ async def _perform_product_search(
     state: FSMContext,
     query: str,
     api_client,
-    prompt_manager,
     city_id: str
 ):
     """
     Perform product search and display results with inline buttons
     """
     # Show searching message
-    search_msg = await prompt_manager.get_prompt(
-        "catalog_search",
-        default="🔍 Ищу в каталоге..."
-    )
+    search_msg = "🔍 Ищу в каталоге..."
     status = await message.answer(search_msg)
     
     # Search products
@@ -96,10 +91,7 @@ async def _perform_product_search(
     await status.delete()
     
     if not products:
-        no_results = await prompt_manager.get_prompt(
-            "no_results",
-            default="😔 К сожалению, ничего не найдено. Попробуйте другой запрос или свяжитесь с менеджером."
-        )
+        no_results = "😔 К сожалению, ничего не найдено. Попробуйте другой запрос или свяжитесь с менеджером."
         
         # Offer escalation
         keyboard = InlineKeyboardMarkup(inline_keyboard=[

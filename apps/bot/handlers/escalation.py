@@ -15,8 +15,8 @@ router = Router()
 @router.callback_query(F.data == "escalate:manager")
 async def escalate_to_manager(callback: types.CallbackQuery, state: FSMContext):
     """Tag manager in Telegram"""
-    prompt_manager = callback.message.bot["prompt_manager"]
-    manager_id = prompt_manager.manager_telegram_id
+    # TODO: Get manager_id from environment or config
+    manager_id = None  # Temporarily disabled - need to configure manager_telegram_id
     
     if not manager_id:
         await callback.message.answer(
@@ -55,8 +55,8 @@ async def escalate_to_manager(callback: types.CallbackQuery, state: FSMContext):
 @router.callback_query(F.data == "escalate:ticket")
 async def create_ticket(callback: types.CallbackQuery, state: FSMContext):
     """Create Bitrix CRM deal"""
-    api_client = callback.message.bot["api_client"]
-    prompt_manager = callback.message.bot["prompt_manager"]
+    api_client = callback.message.bot.get("api_client")
+    city_id = "default"  # Default city for now
     
     user = callback.from_user
     username = user.username or user.first_name or "Клиент"
@@ -75,7 +75,7 @@ async def create_ticket(callback: types.CallbackQuery, state: FSMContext):
             customer_telegram=telegram_handle,
             product_id=product_id,
             message=f"Запрос: {query}",
-            city_id=prompt_manager.city_id
+            city_id=city_id
         )
         
         deal_id = result.get("deal_id")

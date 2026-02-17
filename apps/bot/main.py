@@ -83,9 +83,9 @@ def create_app() -> web.Application:
     # Register handlers
     register_handlers(dp)
     
-    # Attach services to bot data
-    dp["api_client"] = api_client
-    dp["prompt_manager"] = prompt_manager
+    # Attach services to bot context (so handlers can access via message.bot["api_client"])
+    bot["api_client"] = api_client
+    bot["prompt_manager"] = prompt_manager
     
     # Setup startup/shutdown hooks
     dp.startup.register(on_startup)

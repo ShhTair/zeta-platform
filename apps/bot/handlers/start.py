@@ -22,13 +22,9 @@ class ConversationState(StatesGroup):
 @router.message(CommandStart())
 async def cmd_start(message: types.Message, state: FSMContext):
     """Handle /start command"""
-    prompt_manager = message.bot["prompt_manager"]
-    
-    # Get dynamic greeting prompt
-    greeting = await prompt_manager.get_prompt(
-        "greeting",
-        default="👋 Добро пожаловать! Я помогу вам найти нужный товар."
-    )
+    greeting = "👋 Здравствуйте! Чем могу помочь?\n\n" \
+                "Если вы ищете мебель или хотите узнать больше о наших товарах, " \
+                "напишите, пожалуйста, что именно вас интересует."
     
     await message.answer(greeting)
     await state.set_state(ConversationState.product_inquiry)

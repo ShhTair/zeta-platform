@@ -19,8 +19,7 @@ async def show_product_details(callback: CallbackQuery, state: FSMContext):
     Show detailed product information with action buttons
     Triggered when user clicks on a product from search results
     """
-    api_client = callback.message.bot["api_client"]
-    prompt_manager = callback.message.bot["prompt_manager"]
+    api_client = callback.message.bot.get("api_client")
     
     # Extract SKU/ID from callback data
     sku = callback.data.split("_", 1)[1]
@@ -100,8 +99,8 @@ async def handle_order_request(callback: CallbackQuery, state: FSMContext):
     """
     Handle order request - escalate to manager or create Bitrix deal
     """
-    api_client = callback.message.bot["api_client"]
-    prompt_manager = callback.message.bot["prompt_manager"]
+    api_client = callback.message.bot.get("api_client")
+    city_id = "default"  # Default city for now
     
     sku = callback.data.split("_", 1)[1]
     state_data = await state.get_data()
@@ -125,7 +124,7 @@ async def handle_order_request(callback: CallbackQuery, state: FSMContext):
             customer_telegram=customer_telegram,
             product_id=sku,
             message=message,
-            city_id=prompt_manager.city_id
+            city_id=city_id
         )
         
         response = "✅ <b>Заявка создана!</b>\n\n"
@@ -219,8 +218,8 @@ async def handle_filter_selection(callback: CallbackQuery, state: FSMContext):
     """
     Handle clarifying question filters (home, office, kids, all)
     """
-    api_client = callback.message.bot["api_client"]
-    prompt_manager = callback.message.bot["prompt_manager"]
+    api_client = callback.message.bot.get("api_client")
+    city_id = "default"  # Default city for now
     
     filter_type = callback.data.split("_", 1)[1]
     state_data = await state.get_data()
@@ -240,24 +239,18 @@ async def handle_filter_selection(callback: CallbackQuery, state: FSMContext):
     await callback.answer(f"Ищу: {enhanced_query}")
     
     # Show searching message
-    search_msg = await prompt_manager.get_prompt(
-        "catalog_search",
-        default="🔍 Ищу в каталоге..."
-    )
+    search_msg = "🔍 Ищу в каталоге..."
     status = await callback.message.edit_text(search_msg)
     
     # Search products with enhanced query
     products = await api_client.search_products(
         query=enhanced_query,
-        city_id=prompt_manager.city_id,
+        city_id=city_id,
         limit=7
     )
     
     if not products:
-        no_results = await prompt_manager.get_prompt(
-            "no_results",
-            default="😔 К сожалению, ничего не найдено. Попробуйте другой запрос или свяжитесь с менеджером."
-        )
+        no_results = "😔 К сожалению, ничего не найдено. Попробуйте другой запрос или свяжитесь с менеджером."
         
         keyboard = InlineKeyboardMarkup(inline_keyboard=[
             [InlineKeyboardButton(text="📞 Связаться с менеджером", callback_data="escalate:manager")],
