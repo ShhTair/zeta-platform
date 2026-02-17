@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect, useCallback, useMemo } from 'react';
-import DataGrid, { Column, SelectColumn } from 'react-data-grid';
+import { DataGrid, Column, SelectColumn } from 'react-data-grid';
 import 'react-data-grid/lib/styles.css';
 import toast, { Toaster } from 'react-hot-toast';
 import { Product, AIValidation, SortDirection } from './types';
@@ -257,9 +257,10 @@ export default function ProductTable({ cityId, currentUser }: ProductTableProps)
     if (!action) return;
 
     if (action.type === 'edit' && action.field) {
+      const field = action.field as keyof Product;
       const updated = products.map((p) =>
         p.id === action.productId
-          ? { ...p, [action.field]: action.oldValue }
+          ? { ...p, [field]: action.oldValue }
           : p
       );
       setProducts(updated);
@@ -272,9 +273,10 @@ export default function ProductTable({ cityId, currentUser }: ProductTableProps)
     if (!action) return;
 
     if (action.type === 'edit' && action.field) {
+      const field = action.field as keyof Product;
       const updated = products.map((p) =>
         p.id === action.productId
-          ? { ...p, [action.field]: action.newValue }
+          ? { ...p, [field]: action.newValue }
           : p
       );
       setProducts(updated);
