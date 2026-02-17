@@ -1,9 +1,17 @@
 import { NextRequest, NextResponse } from 'next/server';
 import OpenAI from 'openai';
 
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
-});
+// Lazy-load OpenAI client to avoid build-time errors
+let openai: OpenAI | null = null;
+
+function getOpenAIClient() {
+  if (!openai && process.env.OPENAI_API_KEY) {
+    openai = new OpenAI({
+      apiKey: process.env.OPENAI_API_KEY,
+    });
+  }
+  return openai;
+}
 
 export async function POST(
   request: NextRequest,
@@ -30,6 +38,11 @@ export async function POST(
 }
 
 async function validateWithOpenAI(product: any) {
+  const client = getOpenAIClient();
+  if (!client) {
+    throw new Error('OpenAI client not available');
+  }
+  
   const prompt = `Analyze this product listing and provide validation feedback:
 
 Product Details:
@@ -55,7 +68,7 @@ Focus on:
 
 Return ONLY valid JSON array, no markdown or explanation.`;
 
-  const completion = await openai.chat.completions.create({
+  const completion = await client.chat.completions.create({
     model: 'gpt-4o-mini',
     messages: [
       {
