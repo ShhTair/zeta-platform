@@ -48,12 +48,15 @@ dp = Dispatcher(storage=storage)
 
 async def on_startup(bot: Bot) -> None:
     """Setup webhook on startup"""
+    from aiogram.types import FSInputFile
     logger.info("🚀 Starting AI-powered ZETA bot...")
     logger.info(f"🤖 OpenAI API key: {'✅ Set' if OPENAI_API_KEY else '❌ Missing'}")
     
-    # No certificate needed - Nginx handles SSL
+    # Upload self-signed certificate to Telegram
+    certificate = FSInputFile("/home/azureuser/webhook_cert.pem")
     await bot.set_webhook(
         url=WEBHOOK_URL,
+        certificate=certificate,
         drop_pending_updates=True
     )
     logger.info(f"✅ Webhook set: {WEBHOOK_URL}")
