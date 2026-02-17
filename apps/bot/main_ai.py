@@ -9,6 +9,7 @@ from aiogram import Bot, Dispatcher
 from aiogram.webhook.aiohttp_server import SimpleRequestHandler, setup_application
 from aiogram.enums import ParseMode
 from aiogram.fsm.storage.memory import MemoryStorage
+from aiogram.client.default import DefaultBotProperties
 from dotenv import load_dotenv
 
 from handlers import start, conversation, callbacks, escalation
@@ -37,7 +38,10 @@ if not OPENAI_API_KEY:
     raise ValueError("OPENAI_API_KEY environment variable is required")
 
 # Initialize bot and dispatcher with FSM storage
-bot = Bot(token=BOT_TOKEN, parse_mode=ParseMode.MARKDOWN)
+bot = Bot(
+    token=BOT_TOKEN,
+    default=DefaultBotProperties(parse_mode=ParseMode.MARKDOWN)
+)
 storage = MemoryStorage()
 dp = Dispatcher(storage=storage)
 
