@@ -20,7 +20,14 @@ export default function LoginPage() {
       password === 'admin123'
     ) {
       const token = 'fake-jwt-token-' + Date.now();
-      const user = { email, name: 'Admin', role: 'SUPER_ADMIN', cityAccess: [] };
+      const user = { 
+        id: 'admin-1',
+        email, 
+        name: 'Admin', 
+        role: 'SUPER_ADMIN' as const, 
+        cityAccess: [],
+        createdAt: new Date().toISOString()
+      };
       
       localStorage.setItem('token', token);
       localStorage.setItem('user', JSON.stringify(user));

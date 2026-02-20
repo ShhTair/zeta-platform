@@ -16,6 +16,7 @@ from services.prompt_manager import PromptManager
 from core.config_manager import ConfigManager
 from core.escalation_logger import EscalationLogger
 from core.analytics_tracker import AnalyticsTracker
+from middleware import ServicesMiddleware
 
 # Load environment variables
 load_dotenv()
@@ -37,7 +38,8 @@ HOST = os.getenv("HOST", "0.0.0.0")
 PORT = int(os.getenv("PORT", 8080))
 
 # Initialize bot and dispatcher
-bot = Bot(token=BOT_TOKEN, parse_mode=ParseMode.HTML)
+from aiogram.client.default import DefaultBotProperties
+bot = Bot(token=BOT_TOKEN, default=DefaultBotProperties(parse_mode=ParseMode.HTML))
 dp = Dispatcher()
 
 # Initialize services (legacy)
@@ -67,8 +69,7 @@ async def on_startup(bot: Bot) -> None:
         config_manager.start_auto_reload()
         logger.info(f"✅ Config loaded + auto-reload started (every {config_manager.reload_interval}s)")
     except Exception as e:
-        logger.error(f"❌ Failed to load admin config: {e}")
-        raise
+        logger.warning(f"⚠️ Failed to load admin config: {e} - continuing without admin config")
     
     # Set webhook
     webhook_url = f"{WEBHOOK_URL}{WEBHOOK_PATH}"
@@ -107,13 +108,17 @@ def create_app() -> web.Application:
     # Register handlers
     register_handlers(dp)
     
-    # Attach services to bot context (so handlers can access via message.bot["api_client"])
-    bot["api_client"] = api_client
-    bot["prompt_manager"] = prompt_manager
-    bot["config_manager"] = config_manager
-    bot["escalation_logger"] = escalation_logger
-    bot["analytics_tracker"] = analytics_tracker
-    bot["city_id"] = CITY_ID
+    # Setup services middleware (aiogram 3.7+ compatible)
+    services = {
+        "api_client": api_client,
+        "prompt_manager": prompt_manager,
+        "config_manager": config_manager,
+        "escalation_logger": escalation_logger,
+        "analytics_tracker": analytics_tracker,
+        "city_id": CITY_ID
+    }
+    dp.message.middleware(ServicesMiddleware(services))
+    dp.callback_query.middleware(ServicesMiddleware(services))
     
     # Setup startup/shutdown hooks
     dp.startup.register(on_startup)
