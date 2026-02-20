@@ -2,9 +2,11 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { useAuthStore } from '@/lib/store';
 
 export default function LoginPage() {
   const router = useRouter();
+  const { setUser, setToken } = useAuthStore();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
@@ -28,8 +30,17 @@ export default function LoginPage() {
         throw new Error(data.message || 'Login failed');
       }
 
-      // Save token
+      // Save to localStorage
       localStorage.setItem('token', data.token);
+      localStorage.setItem('user', JSON.stringify(data.user));
+      
+      // Save to Zustand store
+      setToken(data.token);
+      setUser({
+        ...data.user,
+        role: 'SUPER_ADMIN', // Hardcoded for now
+        cityAccess: [], // Will be populated later
+      });
       
       // Redirect to dashboard
       router.push('/dashboard');
