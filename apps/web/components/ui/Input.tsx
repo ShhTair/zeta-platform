@@ -9,16 +9,16 @@ export default function Input({ label, error, className = '', ...props }: InputP
   return (
     <div className="w-full">
       {label && (
-        <label className="block text-sm font-medium text-gray-300 mb-2">
+        <label className="block text-[14px] font-medium text-[#202124] mb-2">
           {label}
         </label>
       )}
       <input
-        className={`w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent ${className}`}
+        className={`w-full bg-white border border-[#DADCE0] rounded-lg px-4 py-2.5 text-[#202124] text-[14px] placeholder-[#5F6368] focus:outline-none focus:border-[#1A73E8] focus:ring-1 focus:ring-[#1A73E8] transition-all ${className}`}
         {...props}
       />
       {error && (
-        <p className="mt-1 text-sm text-red-500">{error}</p>
+        <p className="mt-1.5 text-[13px] text-[#D93025]">{error}</p>
       )}
     </div>
   );

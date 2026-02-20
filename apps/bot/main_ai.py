@@ -71,8 +71,12 @@ async def on_shutdown(bot: Bot) -> None:
 
 def register_handlers(dp: Dispatcher) -> None:
     """Register all handlers"""
+    from handlers import interactive, conversation_interactive
+    
     dp.include_router(start.router)
-    dp.include_router(conversation.router)  # AI-powered conversation
+    dp.include_router(interactive.router)  # NEW: Interactive UI (buttons, photos, links)
+    dp.include_router(conversation.router)  # AI-powered conversation (legacy)
+    dp.include_router(conversation_interactive.router)  # NEW: Enhanced interactive conversation
     dp.include_router(callbacks.router)
     dp.include_router(escalation.router)
 

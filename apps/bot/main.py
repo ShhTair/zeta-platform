@@ -10,9 +10,12 @@ from aiogram.webhook.aiohttp_server import SimpleRequestHandler, setup_applicati
 from aiogram.enums import ParseMode
 from dotenv import load_dotenv
 
-from handlers import start, product_inquiry, escalation, callbacks
+from handlers import start, product_inquiry, escalation, callbacks, image_search
 from services.api_client import APIClient
 from services.prompt_manager import PromptManager
+from core.config_manager import ConfigManager
+from core.escalation_logger import EscalationLogger
+from core.analytics_tracker import AnalyticsTracker
 
 # Load environment variables
 load_dotenv()
@@ -26,7 +29,7 @@ logger = logging.getLogger(__name__)
 
 # Configuration
 BOT_TOKEN = os.getenv("BOT_TOKEN")
-CITY_ID = os.getenv("CITY_ID", "default")
+CITY_ID = int(os.getenv("CITY_ID", "1"))
 API_URL = os.getenv("API_URL", "http://localhost:8000")
 WEBHOOK_URL = os.getenv("WEBHOOK_URL")  # e.g., https://your-domain.com/webhook
 WEBHOOK_PATH = f"/webhook/{BOT_TOKEN.split(':')[0]}"
@@ -37,21 +40,34 @@ PORT = int(os.getenv("PORT", 8080))
 bot = Bot(token=BOT_TOKEN, parse_mode=ParseMode.HTML)
 dp = Dispatcher()
 
-# Initialize services
+# Initialize services (legacy)
 api_client = APIClient(base_url=API_URL)
-prompt_manager = PromptManager(api_client=api_client, city_id=CITY_ID)
+prompt_manager = PromptManager(api_client=api_client, city_id=str(CITY_ID))
+
+# Initialize new services (admin integration)
+config_manager = ConfigManager(api_url=API_URL, city_id=CITY_ID, reload_interval=300)
+escalation_logger = EscalationLogger(api_url=API_URL)
+analytics_tracker = AnalyticsTracker(api_url=API_URL)
 
 
 async def on_startup(bot: Bot) -> None:
     """Setup webhook on startup"""
     logger.info("Starting bot...")
     
-    # Load city config and prompts
+    # Load city config and prompts (legacy)
     try:
         await prompt_manager.load_config()
-        logger.info(f"✅ Loaded config for city: {CITY_ID}")
+        logger.info(f"✅ Loaded legacy config for city: {CITY_ID}")
     except Exception as e:
-        logger.error(f"❌ Failed to load config: {e}")
+        logger.warning(f"⚠️ Failed to load legacy config: {e}")
+    
+    # Load new config from admin platform
+    try:
+        await config_manager.load_config()
+        config_manager.start_auto_reload()
+        logger.info(f"✅ Config loaded + auto-reload started (every {config_manager.reload_interval}s)")
+    except Exception as e:
+        logger.error(f"❌ Failed to load admin config: {e}")
         raise
     
     # Set webhook
@@ -66,15 +82,23 @@ async def on_startup(bot: Bot) -> None:
 async def on_shutdown(bot: Bot) -> None:
     """Cleanup on shutdown"""
     logger.info("Shutting down...")
+    config_manager.stop_auto_reload()
     await bot.delete_webhook()
     await bot.session.close()
 
 
 def register_handlers(dp: Dispatcher) -> None:
     """Register all handlers"""
+    # Import interactive handlers
+    from handlers import interactive, conversation_interactive
+    
+    # Register in order of priority
     dp.include_router(start.router)
-    dp.include_router(callbacks.router)  # Register callbacks before product_inquiry
-    dp.include_router(product_inquiry.router)
+    dp.include_router(image_search.router)  # Image search (OCR + Vision API)
+    dp.include_router(interactive.router)  # NEW: Interactive UI handlers (buttons, photos, links)
+    dp.include_router(callbacks.router)  # Old callback handlers (backward compatibility)
+    dp.include_router(conversation_interactive.router)  # NEW: Enhanced conversation with inline keyboards
+    dp.include_router(product_inquiry.router)  # Old product inquiry (backward compatibility)
     dp.include_router(escalation.router)
 
 
@@ -86,6 +110,10 @@ def create_app() -> web.Application:
     # Attach services to bot context (so handlers can access via message.bot["api_client"])
     bot["api_client"] = api_client
     bot["prompt_manager"] = prompt_manager
+    bot["config_manager"] = config_manager
+    bot["escalation_logger"] = escalation_logger
+    bot["analytics_tracker"] = analytics_tracker
+    bot["city_id"] = CITY_ID
     
     # Setup startup/shutdown hooks
     dp.startup.register(on_startup)

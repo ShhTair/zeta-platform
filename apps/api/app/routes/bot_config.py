@@ -10,13 +10,29 @@ from app.middleware.audit import create_audit_log
 router = APIRouter(tags=["Bot Configuration"])
 
 
+@router.get("/cities/{city_id}/bot-config", response_model=BotConfigResponse)
+def get_bot_config_public(
+    city_id: int,
+    db: Session = Depends(get_db)
+):
+    """Get bot configuration for a city (public endpoint for bots)"""
+    config = db.query(BotConfig).filter(BotConfig.city_id == city_id).first()
+    if not config:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Bot configuration not found"
+        )
+    
+    return config
+
+
 @router.get("/cities/{city_id}/config", response_model=BotConfigResponse)
 def get_bot_config(
     city_id: int,
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user)
 ):
-    """Get bot configuration for a city"""
+    """Get bot configuration for a city (authenticated endpoint for admin)"""
     from app.dependencies.auth import get_user_cities
     
     accessible_city_ids = get_user_cities(current_user, db)

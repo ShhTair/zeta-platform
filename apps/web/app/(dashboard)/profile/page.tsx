@@ -28,11 +28,11 @@ export default function ProfilePage() {
   }, [profile]);
 
   if (isLoading) {
-    return <div>Loading...</div>;
+    return <div className="text-[#5F6368] text-[14px]">Loading...</div>;
   }
 
   if (!profile) {
-    return <Card><p>Profile not found</p></Card>;
+    return <Card><p className="text-[#5F6368]">Profile not found</p></Card>;
   }
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -54,23 +54,23 @@ export default function ProfilePage() {
 
   return (
     <div className="max-w-2xl mx-auto space-y-6">
-      <div>
-        <h1 className="text-3xl font-bold">Profile</h1>
-        <p className="text-gray-400 mt-1">Manage your account settings</p>
+      <div className="mb-8">
+        <h1 className="text-[28px] font-medium text-[#202124]">Profile</h1>
+        <p className="text-[#5F6368] mt-1 text-[14px]">Manage your account settings</p>
       </div>
 
       <Card>
-        <div className="flex items-center gap-4 mb-6">
-          <div className="w-16 h-16 bg-blue-600 rounded-full flex items-center justify-center text-2xl font-bold">
+        <div className="flex items-center gap-4 mb-6 pb-6 border-b border-[#F1F3F4]">
+          <div className="w-16 h-16 bg-[#1A73E8] rounded-full flex items-center justify-center text-[24px] font-medium text-white">
             {profile.name.charAt(0).toUpperCase()}
           </div>
           <div>
-            <h2 className="text-xl font-bold">{profile.name}</h2>
-            <p className="text-sm text-gray-400">{profile.email}</p>
+            <h2 className="text-[18px] font-medium text-[#202124]">{profile.name}</h2>
+            <p className="text-[13px] text-[#5F6368]">{profile.email}</p>
           </div>
         </div>
 
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form onSubmit={handleSubmit} className="space-y-5">
           <Input
             label="Full Name"
             value={formData.name}
@@ -86,54 +86,56 @@ export default function ProfilePage() {
             required
           />
 
-          <Button type="submit" disabled={updateProfile.isPending}>
-            {updateProfile.isPending ? 'Saving...' : 'Save Changes'}
-          </Button>
+          <div className="pt-2">
+            <Button type="submit" disabled={updateProfile.isPending}>
+              {updateProfile.isPending ? 'Saving...' : 'Save Changes'}
+            </Button>
+          </div>
         </form>
       </Card>
 
       <Card>
-        <h2 className="text-xl font-bold mb-4">Account Information</h2>
-        <div className="space-y-4">
-          <div className="flex items-center gap-3">
-            <Shield size={20} className="text-gray-400" />
-            <div>
-              <p className="text-sm text-gray-400">Role</p>
-              <p className="font-medium">{profile.role.replace('_', ' ')}</p>
+        <h2 className="text-[18px] font-medium text-[#202124] mb-6">Account Information</h2>
+        <div className="space-y-5">
+          <div className="flex items-center gap-3 py-3 border-b border-[#F1F3F4]">
+            <Shield size={20} className="text-[#5F6368]" />
+            <div className="flex-1">
+              <p className="text-[13px] text-[#5F6368]">Role</p>
+              <p className="font-medium text-[#202124] text-[14px]">{profile.role.replace('_', ' ')}</p>
             </div>
           </div>
 
-          <div className="flex items-center gap-3">
-            <User size={20} className="text-gray-400" />
-            <div>
-              <p className="text-sm text-gray-400">User ID</p>
-              <p className="font-mono text-sm">{profile.id}</p>
+          <div className="flex items-center gap-3 py-3 border-b border-[#F1F3F4]">
+            <User size={20} className="text-[#5F6368]" />
+            <div className="flex-1">
+              <p className="text-[13px] text-[#5F6368]">User ID</p>
+              <p className="font-mono text-[13px] text-[#202124]">{profile.id}</p>
             </div>
           </div>
 
-          <div className="flex items-center gap-3">
-            <Mail size={20} className="text-gray-400" />
-            <div>
-              <p className="text-sm text-gray-400">Member Since</p>
-              <p>{new Date(profile.createdAt).toLocaleDateString()}</p>
+          <div className="flex items-center gap-3 py-3 border-b border-[#F1F3F4]">
+            <Mail size={20} className="text-[#5F6368]" />
+            <div className="flex-1">
+              <p className="text-[13px] text-[#5F6368]">Member Since</p>
+              <p className="text-[14px] text-[#202124]">{new Date(profile.createdAt).toLocaleDateString()}</p>
             </div>
           </div>
 
-          <div>
-            <p className="text-sm text-gray-400 mb-2">City Access</p>
+          <div className="pt-2">
+            <p className="text-[13px] text-[#5F6368] mb-3">City Access</p>
             <div className="flex flex-wrap gap-2">
               {profile.role === 'SUPER_ADMIN' ? (
-                <span className="px-3 py-1 bg-purple-600 rounded-full text-sm">
+                <span className="px-3 py-1.5 bg-[#E8F0FE] text-[#1A73E8] rounded-full text-[13px] font-medium">
                   All Cities
                 </span>
               ) : profile.cityAccess.length > 0 ? (
                 profile.cityAccess.map((cityId) => (
-                  <span key={cityId} className="px-3 py-1 bg-blue-600 rounded-full text-sm">
+                  <span key={cityId} className="px-3 py-1.5 bg-[#E8F0FE] text-[#1A73E8] rounded-full text-[13px] font-medium">
                     {cityId}
                   </span>
                 ))
               ) : (
-                <span className="text-gray-500">No cities assigned</span>
+                <span className="text-[#5F6368] text-[14px]">No cities assigned</span>
               )}
             </div>
           </div>

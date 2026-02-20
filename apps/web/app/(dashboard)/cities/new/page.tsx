@@ -20,7 +20,7 @@ export default function NewCityPage() {
   if (!hasRole(['SUPER_ADMIN'])) {
     return (
       <Card>
-        <p className="text-center text-red-500">Access denied. Super Admin only.</p>
+        <p className="text-center text-[#D93025] text-[14px]">Access denied. Super Admin only.</p>
       </Card>
     );
   }
@@ -41,13 +41,13 @@ export default function NewCityPage() {
 
   return (
     <div className="max-w-2xl mx-auto space-y-6">
-      <div>
-        <h1 className="text-3xl font-bold">Create New City</h1>
-        <p className="text-gray-400 mt-1">Add a new city to the platform</p>
+      <div className="mb-8">
+        <h1 className="text-[28px] font-medium text-[#202124]">Create New City</h1>
+        <p className="text-[#5F6368] mt-1 text-[14px]">Add a new city to the platform</p>
       </div>
 
       <Card>
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form onSubmit={handleSubmit} className="space-y-5">
           <Input
             label="City Name"
             value={formData.name}
@@ -67,7 +67,7 @@ export default function NewCityPage() {
             required
           />
 
-          <div className="flex gap-3">
+          <div className="flex gap-3 pt-2">
             <Button type="submit" disabled={createCity.isPending}>
               {createCity.isPending ? 'Creating...' : 'Create City'}
             </Button>

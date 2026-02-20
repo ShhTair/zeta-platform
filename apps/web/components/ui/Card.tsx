@@ -1,11 +1,20 @@
 interface CardProps {
   children: React.ReactNode;
   className?: string;
+  hover?: boolean;
 }
 
-export default function Card({ children, className = '' }: CardProps) {
+export default function Card({ children, className = '', hover = false }: CardProps) {
   return (
-    <div className={`bg-gray-900 border border-gray-800 rounded-lg p-6 ${className}`}>
+    <div className={`
+      bg-white 
+      border border-[#DADCE0] 
+      rounded-lg 
+      p-6 
+      shadow-google-sm 
+      ${hover ? 'hover:shadow-google-md transition-shadow duration-150' : ''}
+      ${className}
+    `}>
       {children}
     </div>
   );

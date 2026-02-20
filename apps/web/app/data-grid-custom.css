@@ -1,0 +1,50 @@
+/* Google Drive style overrides for react-data-grid */
+
+.rdg {
+  --rdg-background-color: #FFFFFF;
+  --rdg-header-background-color: #F9FAFB;
+  --rdg-row-hover-background-color: #F1F3F4;
+  --rdg-row-selected-background-color: #E8F0FE;
+  --rdg-row-selected-hover-background-color: #D2E3FC;
+  --rdg-border-color: #DADCE0;
+  --rdg-summary-border-color: #DADCE0;
+  --rdg-color: #202124;
+  --rdg-header-color: #5F6368;
+  --rdg-font-size: 14px;
+  
+  font-family: 'Google Sans', 'Roboto', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  border: 1px solid #DADCE0;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.rdg-header-row {
+  font-weight: 500;
+  font-size: 13px;
+  text-transform: none;
+  letter-spacing: 0;
+}
+
+.rdg-cell {
+  border-right: 1px solid #F1F3F4;
+  border-bottom: 1px solid #F1F3F4;
+  padding: 0 12px;
+}
+
+.rdg-cell:hover {
+  background-color: #F1F3F4;
+}
+
+/* Checkbox styling */
+.rdg-checkbox-input {
+  accent-color: #1A73E8;
+}
+
+/* Selected row styling */
+.rdg-row[aria-selected="true"] {
+  background-color: #E8F0FE;
+}
+
+.rdg-row[aria-selected="true"]:hover {
+  background-color: #D2E3FC;
+}

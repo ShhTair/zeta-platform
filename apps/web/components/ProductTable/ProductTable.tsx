@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback, useMemo } from 'react';
 import { DataGrid, Column, SelectColumn } from 'react-data-grid';
 import 'react-data-grid/lib/styles.css';
+import '@/app/data-grid-custom.css';
 import toast, { Toaster } from 'react-hot-toast';
 import { Product, AIValidation, SortDirection } from './types';
 import {
@@ -338,8 +339,8 @@ export default function ProductTable({ cityId, currentUser }: ProductTableProps)
         <div className="relative">
           {row.name}
           {aiValidations[row.id]?.length > 0 && (
-            <span className="absolute right-2 top-1/2 -translate-y-1/2 text-blue-500">
-              🤖
+            <span className="absolute right-2 top-1/2 -translate-y-1/2 text-[#1A73E8] text-xs">
+              AI
             </span>
           )}
         </div>
@@ -387,7 +388,13 @@ export default function ProductTable({ cityId, currentUser }: ProductTableProps)
       width: 80,
       editable: true,
       resizable: true,
-      renderCell: ({ row }) => (row.is_active ? '✅' : '❌'),
+      renderCell: ({ row }) => (
+        <span className={`inline-block px-2 py-0.5 rounded text-xs font-medium ${
+          row.is_active ? 'bg-[#E6F4EA] text-[#1E8E3E]' : 'bg-[#FCE8E6] text-[#D93025]'
+        }`}>
+          {row.is_active ? 'Yes' : 'No'}
+        </span>
+      ),
     },
     {
       key: 'updated_by',
@@ -412,9 +419,9 @@ export default function ProductTable({ cityId, currentUser }: ProductTableProps)
             setSelectedProductForAudit(row.id);
             setShowAuditPanel(true);
           }}
-          className="text-blue-500 hover:text-blue-700 text-sm"
+          className="text-[#1A73E8] hover:text-[#1557B0] text-sm font-medium"
         >
-          📜 History
+          History
         </button>
       ),
     },

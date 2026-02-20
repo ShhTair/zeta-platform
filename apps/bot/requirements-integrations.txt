@@ -1,0 +1,39 @@
+# ZETA Bot - Optional Integration Dependencies
+# Install when enabling specific integrations
+
+# Redis (for conversation memory and rate limiting)
+redis>=5.0.0
+hiredis>=2.2.0  # C parser for better performance
+
+# Document processing
+PyPDF2>=3.0.0  # PDF text extraction
+pandas>=2.0.0  # Excel parsing
+openpyxl>=3.1.0  # Excel .xlsx support
+python-docx>=1.1.0  # Word document parsing
+
+# Vector search (choose one)
+pinecone-client>=3.0.0  # Cloud vector database
+qdrant-client>=1.7.0  # Self-hosted vector database
+# pgvector  # PostgreSQL extension (if using PostgreSQL)
+
+# Scheduler (for automated syncs)
+APScheduler>=3.10.0
+
+# YAML config parsing
+PyYAML>=6.0
+
+# HTTP client enhancements (for 1C/Bitrix24)
+httpx>=0.26.0  # Alternative to aiohttp with better sync support
+tenacity>=8.2.0  # Retry logic
+
+# Monitoring (optional)
+prometheus-client>=0.19.0  # Metrics export
+sentry-sdk>=1.40.0  # Error tracking
+
+# Install all integration dependencies:
+# pip install -r requirements.txt -r requirements-integrations.txt
+
+# Or install selectively based on what you enable:
+# Redis features: pip install redis hiredis
+# Documents: pip install PyPDF2 pandas openpyxl python-docx pinecone-client
+# Monitoring: pip install prometheus-client sentry-sdk

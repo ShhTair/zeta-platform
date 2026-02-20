@@ -14,19 +14,19 @@ export default function CitiesPage() {
   if (!hasRole(['SUPER_ADMIN'])) {
     return (
       <Card>
-        <p className="text-center text-red-500">Access denied. Super Admin only.</p>
+        <p className="text-center text-[#D93025] text-[14px]">Access denied. Super Admin only.</p>
       </Card>
     );
   }
 
   if (isLoading) {
-    return <div>Loading...</div>;
+    return <div className="text-[#5F6368] text-[14px]">Loading...</div>;
   }
 
   return (
     <div className="space-y-6">
-      <div className="flex justify-between items-center">
-        <h1 className="text-3xl font-bold">Cities</h1>
+      <div className="flex justify-between items-center mb-8">
+        <h1 className="text-[28px] font-medium text-[#202124]">Cities</h1>
         <Link href="/cities/new">
           <Button>
             <Plus size={16} className="mr-2" />
@@ -38,26 +38,26 @@ export default function CitiesPage() {
       {cities && cities.length > 0 ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {cities.map((city) => (
-            <Card key={city.id}>
+            <Card key={city.id} hover>
               <div className="flex items-start justify-between mb-4">
                 <div className="flex items-center gap-3">
-                  <div className="p-2 bg-blue-600 rounded-lg">
-                    <Building2 size={20} />
+                  <div className="p-2 bg-[#E8F0FE] rounded-lg">
+                    <Building2 size={20} className="text-[#1A73E8]" />
                   </div>
                   <div>
-                    <h3 className="font-bold">{city.name}</h3>
-                    <p className="text-sm text-gray-400">{city.slug}</p>
+                    <h3 className="font-medium text-[#202124] text-[15px]">{city.name}</h3>
+                    <p className="text-[13px] text-[#5F6368]">{city.slug}</p>
                   </div>
                 </div>
-                <span className={`text-xs px-2 py-1 rounded ${
+                <span className={`text-[12px] px-2.5 py-1 rounded-full font-medium ${
                   city.isActive 
-                    ? 'bg-green-600 text-white' 
-                    : 'bg-red-600 text-white'
+                    ? 'bg-[#E6F4EA] text-[#1E8E3E]' 
+                    : 'bg-[#FCE8E6] text-[#D93025]'
                 }`}>
                   {city.isActive ? 'Active' : 'Inactive'}
                 </span>
               </div>
-              <div className="text-sm text-gray-400 mb-4">
+              <div className="text-[13px] text-[#5F6368] mb-4">
                 Created {new Date(city.createdAt).toLocaleDateString()}
               </div>
               <Link href={`/cities/${city.id}/settings`}>
@@ -70,10 +70,12 @@ export default function CitiesPage() {
         </div>
       ) : (
         <Card>
-          <div className="text-center py-8">
-            <Building2 size={48} className="mx-auto text-gray-600 mb-4" />
-            <h3 className="text-xl font-semibold mb-2">No Cities Yet</h3>
-            <p className="text-gray-400 mb-4">Create your first city to get started.</p>
+          <div className="text-center py-12">
+            <div className="w-16 h-16 bg-[#F1F3F4] rounded-full flex items-center justify-center mx-auto mb-4">
+              <Building2 size={32} className="text-[#5F6368]" />
+            </div>
+            <h3 className="text-[18px] font-medium text-[#202124] mb-2">No Cities Yet</h3>
+            <p className="text-[#5F6368] text-[14px] mb-6">Create your first city to get started.</p>
             <Link href="/cities/new">
               <Button>
                 <Plus size={16} className="mr-2" />

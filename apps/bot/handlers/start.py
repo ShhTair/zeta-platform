@@ -21,12 +21,24 @@ class ConversationState(StatesGroup):
 
 @router.message(CommandStart())
 async def cmd_start(message: types.Message, state: FSMContext):
-    """Handle /start command"""
-    greeting = "👋 Здравствуйте! Чем могу помочь?\n\n" \
-                "Если вы ищете мебель или хотите узнать больше о наших товарах, " \
-                "напишите, пожалуйста, что именно вас интересует."
+    """Handle /start command with beautiful interactive menu"""
+    from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
     
-    await message.answer(greeting)
+    greeting = (
+        "👋 <b>Добро пожаловать в ZETA!</b>\n\n"
+        "Я помогу вам найти идеальную мебель для дома или офиса.\n\n"
+        "Выберите действие или просто напишите, что вы ищете:"
+    )
+    
+    # Quick action menu
+    keyboard = InlineKeyboardMarkup(inline_keyboard=[
+        [InlineKeyboardButton(text="🔍 Искать товар", callback_data="action_search")],
+        [InlineKeyboardButton(text="🏷️ Популярные товары", callback_data="action_popular")],
+        [InlineKeyboardButton(text="💬 Связаться", callback_data="action_contact")],
+        [InlineKeyboardButton(text="ℹ️ О компании", callback_data="action_about")]
+    ])
+    
+    await message.answer(greeting, reply_markup=keyboard)
     await state.set_state(ConversationState.product_inquiry)
     
     logger.info(f"User {message.from_user.id} started conversation")

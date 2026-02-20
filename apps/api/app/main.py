@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from app.core.config import settings
-from app.routes import auth, cities, bot_config, products, analytics, audit_logs, health
+from app.routes import auth, cities, bot_config, products, analytics, audit_logs, health, escalations
 
 app = FastAPI(
     title="ZETA Platform API",
@@ -25,6 +25,7 @@ app.include_router(cities.router)
 app.include_router(bot_config.router)
 app.include_router(products.router)
 app.include_router(analytics.router)
+app.include_router(escalations.router)
 app.include_router(audit_logs.router)
 
 

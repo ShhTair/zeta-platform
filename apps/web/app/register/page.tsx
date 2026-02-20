@@ -30,12 +30,14 @@ export default function RegisterPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-black">
-      <div className="w-full max-w-md p-8 bg-gray-900 border border-gray-800 rounded-lg">
-        <h1 className="text-3xl font-bold mb-2">Join ZETA</h1>
-        <p className="text-gray-400 mb-6">Create your account (invite only)</p>
+    <div className="min-h-screen flex items-center justify-center bg-white">
+      <div className="w-full max-w-md p-10 bg-white border border-[#DADCE0] rounded-lg shadow-google-md">
+        <div className="text-center mb-8">
+          <h1 className="text-[24px] font-medium text-[#202124] mb-2">Join ZETA</h1>
+          <p className="text-[#5F6368] text-[14px]">Create your account (invite only)</p>
+        </div>
 
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form onSubmit={handleSubmit} className="space-y-5">
           <Input
             type="text"
             label="Full Name"
@@ -59,7 +61,7 @@ export default function RegisterPage() {
             label="Password"
             value={formData.password}
             onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-            placeholder="••••••••"
+            placeholder="Create a strong password"
             required
           />
 
@@ -74,16 +76,16 @@ export default function RegisterPage() {
 
           <Button
             type="submit"
-            className="w-full"
+            className="w-full mt-6"
             disabled={registerMutation.isPending}
           >
             {registerMutation.isPending ? 'Creating account...' : 'Create Account'}
           </Button>
         </form>
 
-        <p className="mt-6 text-center text-sm text-gray-400">
+        <p className="mt-6 text-center text-[14px] text-[#5F6368]">
           Already have an account?{' '}
-          <Link href="/login" className="text-blue-500 hover:text-blue-400">
+          <Link href="/login" className="text-[#1A73E8] hover:underline font-medium">
             Sign in
           </Link>
         </p>

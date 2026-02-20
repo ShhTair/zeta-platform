@@ -34,12 +34,14 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-black">
-      <div className="w-full max-w-md p-8 bg-gray-900 border border-gray-800 rounded-lg">
-        <h1 className="text-3xl font-bold mb-2">Welcome to ZETA</h1>
-        <p className="text-gray-400 mb-6">Sign in to your account</p>
+    <div className="min-h-screen flex items-center justify-center bg-white">
+      <div className="w-full max-w-md p-10 bg-white border border-[#DADCE0] rounded-lg shadow-google-md">
+        <div className="text-center mb-8">
+          <h1 className="text-[24px] font-medium text-[#202124] mb-2">Welcome to ZETA</h1>
+          <p className="text-[#5F6368] text-[14px]">Sign in to your account</p>
+        </div>
 
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form onSubmit={handleSubmit} className="space-y-5">
           <Input
             type="email"
             label="Email"
@@ -54,22 +56,22 @@ export default function LoginPage() {
             label="Password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            placeholder="••••••••"
+            placeholder="Enter your password"
             required
           />
 
           <Button
             type="submit"
-            className="w-full"
+            className="w-full mt-6"
             disabled={loginMutation.isPending}
           >
             {loginMutation.isPending ? 'Signing in...' : 'Sign In'}
           </Button>
         </form>
 
-        <p className="mt-6 text-center text-sm text-gray-400">
+        <p className="mt-6 text-center text-[14px] text-[#5F6368]">
           Don't have an account?{' '}
-          <Link href="/register" className="text-blue-500 hover:text-blue-400">
+          <Link href="/register" className="text-[#1A73E8] hover:underline font-medium">
             Register
           </Link>
         </p>

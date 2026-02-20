@@ -1,6 +1,10 @@
 # ZETA Telegram Bot Requirements
-aiogram==3.13.1
-aiohttp==3.10.5
-pydantic==2.9.2
-python-dotenv==1.0.1
-openai==1.54.3
+aiogram>=3.13.1
+aiohttp>=3.10.5
+pydantic>=2.9.2
+python-dotenv>=1.0.1
+openai>=1.54.3
+
+# Image search dependencies
+Pillow>=11.1.0
+pytesseract>=0.3.13

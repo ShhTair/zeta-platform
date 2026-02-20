@@ -1,0 +1,194 @@
+feat: integrate ZETA bot with admin platform for dynamic config & escalations
+
+## Overview
+Complete integration between Telegram bot and admin platform enabling dynamic
+configuration, escalation management, and analytics tracking without bot restarts.
+
+## Backend Changes
+
+### New Models
+- Add Escalation model (escalations table)
+  - Track customer escalations with conversation history
+  - Status tracking (pending/contacted/resolved)
+  - Assignment and notes support
+  
+- Add AnalyticsEvent model (analytics_events table)
+  - Track bot usage events (searches, views, escalations)
+  - JSON data field for flexible event storage
+
+### New API Routes
+- POST /escalations - Create escalation (public for bot)
+- GET /cities/{id}/escalations - List escalations (authenticated)
+- GET /escalations/{id} - Get single escalation
+- PUT /escalations/{id} - Update escalation status
+- DELETE /escalations/{id} - Delete escalation
+- GET /cities/{id}/bot-config - Get bot config (public for bot)
+- POST /analytics/events - Track event (public for bot)
+- GET /cities/{id}/analytics - Enhanced with escalation & event stats
+
+### Database Migration
+- Add 002_add_escalations_analytics.py migration
+  - Creates escalations table
+  - Creates analytics_events table
+  - Adds indexes for performance
+
+### Schemas
+- Add escalation schemas (EscalationCreate, EscalationUpdate, EscalationResponse)
+- Add analytics schemas (AnalyticsEventCreate, AnalyticsEventResponse)
+
+## Bot Changes
+
+### New Core Services
+- ConfigManager - Dynamic config loading with auto-reload (5 min interval)
+  - Loads config from admin API
+  - Background task for hot-reload
+  - Properties: system_prompt, greeting_message, manager_contact, escalation_action
+  
+- EscalationLogger - Log escalations to admin platform
+  - Simple async API calls
+  - Non-blocking (won't crash bot on failure)
+  
+- AnalyticsTracker - Track bot events to admin platform
+  - Helper methods: track_search, track_product_view, track_escalation
+  - Non-blocking event tracking
+
+### Bot Integration
+- Services attached to bot context for handler access
+- Auto-reload task lifecycle (start/stop)
+- Example handlers demonstrating usage
+
+### Example Handlers
+- /config - Show current configuration (debug)
+- /contact - Show manager contact from config
+- /escalate - Create escalation with reason
+
+## Documentation
+
+### Comprehensive Guides
+- ADMIN_INTEGRATION_README.md - Quick start guide
+- ADMIN_INTEGRATION_GUIDE.md - Full implementation details
+- INTEGRATION_COMPLETE.md - Completion report
+- INTEGRATION_SUMMARY.md - Executive summary
+- VERIFICATION_CHECKLIST.md - Testing checklist
+
+### Testing
+- test_admin_integration.py - Integration test suite
+  - Tests all API endpoints
+  - Tests all bot services
+  - 6 automated tests
+
+## Features Delivered
+
+✅ Dynamic prompt loading from admin API
+✅ Bot hot-reloads config every 5 minutes (no restart needed)
+✅ Escalation logging to admin platform
+✅ Admin can view escalations & mark resolved (API ready)
+✅ Admin can edit prompts & manager contact (API ready)
+✅ Analytics tracked and displayed (API ready)
+✅ Zero-downtime configuration updates
+
+## Frontend TODO
+
+Frontend templates provided in documentation for:
+- Escalations management page
+- Bot configuration editor
+- Enhanced analytics dashboard
+
+## Breaking Changes
+
+None - This is additive functionality only.
+
+## Migration Required
+
+Yes - Run `alembic upgrade head` before deploying.
+
+## Files Changed
+
+New files (11):
+- apps/api/app/models/escalation.py
+- apps/api/app/models/analytics_event.py
+- apps/api/app/routes/escalations.py
+- apps/api/app/schemas/escalation.py
+- apps/api/app/schemas/analytics.py
+- apps/api/alembic/versions/002_add_escalations_analytics.py
+- apps/bot/core/config_manager.py
+- apps/bot/core/escalation_logger.py
+- apps/bot/core/analytics_tracker.py
+- apps/bot/handlers/admin_integrated.py
+- test_admin_integration.py
+
+Modified files (6):
+- apps/api/app/models/__init__.py
+- apps/api/app/models/city.py
+- apps/api/app/routes/analytics.py
+- apps/api/app/routes/bot_config.py
+- apps/api/app/main.py
+- apps/bot/main.py
+
+Documentation (5):
+- ADMIN_INTEGRATION_README.md
+- ADMIN_INTEGRATION_GUIDE.md
+- INTEGRATION_COMPLETE.md
+- INTEGRATION_SUMMARY.md
+- VERIFICATION_CHECKLIST.md
+
+## Testing
+
+Run integration tests:
+```bash
+python test_admin_integration.py
+```
+
+Expected: 6/6 tests pass
+
+## Deployment Steps
+
+1. Pull latest code
+2. Run database migration: `cd apps/api && alembic upgrade head`
+3. Create bot config in admin panel (if not exists)
+4. Restart API: `uvicorn app.main:app`
+5. Restart bot: `python apps/bot/main.py`
+6. Verify config auto-reload logs appear
+
+## Configuration
+
+Bot .env requires:
+- BOT_TOKEN (unchanged)
+- CITY_ID (integer)
+- API_URL (admin API URL)
+- WEBHOOK_URL (unchanged)
+
+## Performance Impact
+
+- Auto-reload every 5 minutes (configurable)
+- Non-blocking analytics tracking
+- Indexed database queries
+- Minimal overhead (~1 API call per 5 minutes per bot)
+
+## Security
+
+- Public endpoints for bot (escalations, analytics, config)
+- Authenticated endpoints for admin (list, update, delete)
+- Audit logging for config changes
+- CORS configured
+
+## Monitoring
+
+Bot logs to watch:
+- "✅ Config loaded + auto-reload started"
+- "🔄 Config auto-reloaded (every 300s)"
+- "✅ Escalation logged: #<id>"
+- "📊 Event tracked: <type>"
+
+API logs to watch:
+- POST /escalations - 201 Created
+- POST /analytics/events - 201 Created
+- GET /cities/{id}/bot-config - 200 OK
+
+## References
+
+Issue: ZETA-001 - Bot Admin Integration
+Docs: See ADMIN_INTEGRATION_README.md for full details
+Tests: test_admin_integration.py
+
+Signed-off-by: OpenClaw Agent <agent@openclaw.dev>

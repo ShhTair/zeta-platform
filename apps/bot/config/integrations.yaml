@@ -1,0 +1,173 @@
+# ZETA Bot Integrations Configuration
+# 
+# This file defines settings for third-party integrations.
+# Enable integrations as they become ready for production.
+
+integrations:
+  # 1C:Enterprise Integration
+  onec:
+    enabled: false  # TODO: Enable when 1C HTTP service is configured
+    api_url: "http://1c-server/base/hs"
+    username: "bot_user"
+    password: "CHANGE_ME"  # Store in environment variable: ONEC_PASSWORD
+    timeout: 30  # seconds
+    sync_interval: 3600  # 1 hour (in seconds)
+    sync_on_startup: false
+    features:
+      product_sync: true
+      price_sync: true
+      stock_check: true
+      order_creation: true
+    
+    # Field mapping (1C field -> ZETA field)
+    field_mapping:
+      sku: "Код"
+      name: "Наименование"
+      price: "Цена"
+      stock: "Остаток"
+      category: "Группа"
+      description: "Описание"
+    
+    # TODO: Configure when ready
+    # - Install 1C HTTP service extension
+    # - Create API user with proper permissions
+    # - Test endpoints and field mapping
+    # - Setup webhooks for real-time updates
+  
+  # Bitrix24 CRM Integration
+  bitrix24:
+    enabled: false  # TODO: Enable when Bitrix24 webhook is configured
+    webhook_url: "https://your-domain.bitrix24.com/rest/1/xxxxx/"  # Get from Bitrix24 settings
+    timeout: 30  # seconds
+    features:
+      create_leads: true  # Auto-create leads from bot conversations
+      create_deals: true  # Create deals from orders
+      create_tasks: true  # Create tasks for managers
+      log_activities: true  # Log bot interactions
+    
+    # Lead settings
+    lead:
+      source_id: "TELEGRAM"  # Lead source identifier
+      auto_create: true  # Create lead on first contact
+      responsible_id: null  # Default responsible user ID (null = auto-assign)
+      stages:
+        new: "NEW"
+        contacted: "IN_PROCESS"
+        qualified: "CONVERTED"
+    
+    # Deal settings
+    deal:
+      category_id: 0  # Default deal category
+      stage_new: "NEW"
+      stage_paid: "WON"
+      currency: "KZT"
+    
+    # TODO: Configure when ready
+    # - Get webhook URL from Bitrix24 account
+    # - Configure field mappings
+    # - Setup lead/deal pipelines
+    # - Test API calls
+    # - Define automation rules
+  
+  # Document Management
+  documents:
+    enabled: true  # Basic document storage is available
+    storage_path: "/data/documents"
+    index_on_upload: false  # TODO: Enable when indexing is implemented
+    max_file_size_mb: 50
+    allowed_types:
+      - pdf
+      - xlsx
+      - xls
+      - docx
+      - txt
+      - csv
+    
+    # Search settings (TODO: Implement in next phase)
+    search:
+      enabled: false
+      embedding_model: "text-embedding-3-small"
+      chunk_size: 500  # characters
+      chunk_overlap: 50
+      max_results: 5
+      min_relevance_score: 0.7
+    
+    # TODO: Implement
+    # - Text extraction (PyPDF2, pandas)
+    # - Embedding generation (OpenAI)
+    # - Vector storage (Pinecone/Qdrant/pgvector)
+    # - Semantic search
+
+# Advanced Features
+advanced:
+  # Conversation Memory
+  memory:
+    enabled: false  # TODO: Enable when Redis is available
+    redis_url: "redis://localhost:6379/0"  # Or from env: REDIS_URL
+    max_messages: 20  # Keep last N messages per user
+    ttl_seconds: 86400  # 24 hours
+  
+  # Rate Limiting
+  rate_limit:
+    enabled: false  # TODO: Enable when Redis is available
+    redis_url: "redis://localhost:6379/0"
+    limit: 10  # messages per window
+    window: 60  # seconds
+    warning_message: "⏳ Слишком много запросов. Подождите минуту."
+  
+  # Internationalization
+  i18n:
+    enabled: true  # Basic i18n support is available
+    default_language: "ru"
+    supported_languages:
+      - ru  # Russian
+      - kk  # Kazakh
+    auto_detect: true  # Detect from Telegram user language
+
+# Monitoring & Logging
+monitoring:
+  log_level: "INFO"  # DEBUG, INFO, WARNING, ERROR
+  log_integrations: true
+  track_api_calls: true
+  alert_on_errors: false  # TODO: Setup alerting
+  
+  # Metrics (TODO: Implement)
+  metrics:
+    enabled: false
+    export_interval: 60  # seconds
+    collectors:
+      - integration_calls
+      - integration_errors
+      - document_searches
+      - api_latency
+
+# Sync Schedule (for cron/scheduler)
+sync_schedule:
+  # Product sync from 1C
+  product_sync:
+    enabled: false
+    interval: "0 */1 * * *"  # Every hour
+    timeout: 600  # 10 minutes
+  
+  # Price sync from 1C
+  price_sync:
+    enabled: false
+    interval: "0 0 * * *"  # Daily at midnight
+    timeout: 300  # 5 minutes
+
+# Notes for Next Phase:
+# 
+# When enabling integrations:
+# 1. Set enabled: true
+# 2. Configure connection details (URL, credentials)
+# 3. Test connection with initialize()
+# 4. Verify field mappings
+# 5. Test with sample data
+# 6. Monitor logs for errors
+# 7. Setup alerts for failures
+# 
+# Store sensitive credentials in environment variables:
+# - ONEC_PASSWORD
+# - BITRIX24_WEBHOOK_URL
+# - REDIS_URL
+# - OPENAI_API_KEY (for embeddings)

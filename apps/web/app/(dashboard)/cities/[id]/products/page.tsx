@@ -32,13 +32,13 @@ export default function ProductsPage() {
   if (!canAccessCity(cityId)) {
     return (
       <Card>
-        <p className="text-center text-red-500">Access denied.</p>
+        <p className="text-center text-[#D93025] text-[14px]">Access denied.</p>
       </Card>
     );
   }
 
   if (isLoading) {
-    return <div>Loading...</div>;
+    return <div className="text-[#5F6368] text-[14px]">Loading...</div>;
   }
 
   const resetForm = () => {
@@ -103,10 +103,10 @@ export default function ProductsPage() {
 
   return (
     <div className="space-y-6">
-      <div className="flex justify-between items-center">
+      <div className="flex justify-between items-center mb-8">
         <div>
-          <h1 className="text-3xl font-bold">Products</h1>
-          <p className="text-gray-400 mt-1">{city?.name}</p>
+          <h1 className="text-[28px] font-medium text-[#202124]">Products</h1>
+          <p className="text-[#5F6368] mt-1 text-[14px]">{city?.name}</p>
         </div>
         {!isAdding && (
           <Button onClick={() => setIsAdding(true)}>
@@ -118,10 +118,10 @@ export default function ProductsPage() {
 
       {isAdding && (
         <Card>
-          <h2 className="text-xl font-bold mb-4">
+          <h2 className="text-[18px] font-medium text-[#202124] mb-6">
             {editingId ? 'Edit Product' : 'New Product'}
           </h2>
-          <form onSubmit={handleSubmit} className="space-y-4">
+          <form onSubmit={handleSubmit} className="space-y-5">
             <Input
               label="Product Name"
               value={formData.name}
@@ -131,13 +131,13 @@ export default function ProductsPage() {
             />
 
             <div>
-              <label className="block text-sm font-medium text-gray-300 mb-2">
+              <label className="block text-[14px] font-medium text-[#202124] mb-2">
                 Description
               </label>
               <textarea
                 value={formData.description}
                 onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full bg-white border border-[#DADCE0] rounded-lg px-4 py-2.5 text-[#202124] placeholder-[#5F6368] focus:outline-none focus:border-[#1A73E8] focus:ring-1 focus:ring-[#1A73E8] text-[14px]"
                 rows={3}
                 placeholder="Product description (optional)"
               />
@@ -158,14 +158,14 @@ export default function ProductsPage() {
                 id="isActive"
                 checked={formData.isActive}
                 onChange={(e) => setFormData({ ...formData, isActive: e.target.checked })}
-                className="w-4 h-4 text-blue-600 bg-gray-800 border-gray-700 rounded focus:ring-blue-500"
+                className="w-4 h-4 text-[#1A73E8] bg-white border-[#DADCE0] rounded focus:ring-[#1A73E8]"
               />
-              <label htmlFor="isActive" className="text-sm font-medium">
+              <label htmlFor="isActive" className="text-[14px] font-medium text-[#202124]">
                 Product is active
               </label>
             </div>
 
-            <div className="flex gap-3">
+            <div className="flex gap-3 pt-2">
               <Button type="submit" disabled={createProduct.isPending || updateProduct.isPending}>
                 {editingId ? 'Update' : 'Create'} Product
               </Button>
@@ -180,43 +180,43 @@ export default function ProductsPage() {
       {products && products.length > 0 ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {products.map((product) => (
-            <Card key={product.id}>
+            <Card key={product.id} hover>
               <div className="flex items-start justify-between mb-3">
                 <div className="flex items-center gap-3">
-                  <div className="p-2 bg-purple-600 rounded-lg">
-                    <Package size={20} />
+                  <div className="p-2 bg-[#E8F0FE] rounded-lg">
+                    <Package size={20} className="text-[#1A73E8]" />
                   </div>
                   <div>
-                    <h3 className="font-bold">{product.name}</h3>
+                    <h3 className="font-medium text-[#202124] text-[15px]">{product.name}</h3>
                   </div>
                 </div>
-                <span className={`text-xs px-2 py-1 rounded ${
+                <span className={`text-[12px] px-2.5 py-1 rounded-full font-medium ${
                   product.isActive 
-                    ? 'bg-green-600 text-white' 
-                    : 'bg-gray-600 text-white'
+                    ? 'bg-[#E6F4EA] text-[#1E8E3E]' 
+                    : 'bg-[#F1F3F4] text-[#5F6368]'
                 }`}>
                   {product.isActive ? 'Active' : 'Inactive'}
                 </span>
               </div>
 
               {product.description && (
-                <p className="text-sm text-gray-400 mb-3">{product.description}</p>
+                <p className="text-[13px] text-[#5F6368] mb-3 line-clamp-2">{product.description}</p>
               )}
 
               {product.price && (
-                <p className="text-lg font-bold text-blue-400 mb-3">
+                <p className="text-[20px] font-medium text-[#1A73E8] mb-4">
                   ${product.price.toFixed(2)}
                 </p>
               )}
 
-              <div className="flex gap-2">
+              <div className="flex gap-2 pt-2 border-t border-[#F1F3F4]">
                 <Button
                   size="sm"
                   variant="secondary"
                   className="flex-1"
                   onClick={() => handleEdit(product)}
                 >
-                  <Edit2 size={14} className="mr-1" />
+                  <Edit2 size={14} className="mr-1.5" />
                   Edit
                 </Button>
                 <Button
@@ -232,10 +232,12 @@ export default function ProductsPage() {
         </div>
       ) : (
         <Card>
-          <div className="text-center py-8">
-            <Package size={48} className="mx-auto text-gray-600 mb-4" />
-            <h3 className="text-xl font-semibold mb-2">No Products Yet</h3>
-            <p className="text-gray-400 mb-4">Add your first product to get started.</p>
+          <div className="text-center py-12">
+            <div className="w-16 h-16 bg-[#F1F3F4] rounded-full flex items-center justify-center mx-auto mb-4">
+              <Package size={32} className="text-[#5F6368]" />
+            </div>
+            <h3 className="text-[18px] font-medium text-[#202124] mb-2">No Products Yet</h3>
+            <p className="text-[#5F6368] text-[14px] mb-6">Add your first product to get started.</p>
             <Button onClick={() => setIsAdding(true)}>
               <Plus size={16} className="mr-2" />
               Add Product

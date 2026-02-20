@@ -20,6 +20,8 @@ class City(Base):
     products = relationship("Product", back_populates="city", cascade="all, delete-orphan")
     conversations = relationship("Conversation", back_populates="city", cascade="all, delete-orphan")
     audit_logs = relationship("AuditLog", back_populates="city")
+    escalations = relationship("Escalation", back_populates="city", cascade="all, delete-orphan")
+    analytics_events = relationship("AnalyticsEvent", back_populates="city", cascade="all, delete-orphan")
 
 
 class CityAdmin(Base):

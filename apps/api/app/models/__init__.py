@@ -7,6 +7,8 @@ from app.models.product import Product
 from app.models.conversation import Conversation
 from app.models.message import Message
 from app.models.audit_log import AuditLog
+from app.models.escalation import Escalation
+from app.models.analytics_event import AnalyticsEvent
 
 __all__ = [
     "User",
@@ -19,4 +21,6 @@ __all__ = [
     "Conversation",
     "Message",
     "AuditLog",
+    "Escalation",
+    "AnalyticsEvent",
 ]
