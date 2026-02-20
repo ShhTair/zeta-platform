@@ -13,20 +13,32 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      
+
       - name: Azure Login
-        uses: azure/login@v1
+        uses: azure/login@v2
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
-      
+
+      - name: Install Azure Container Apps extension
+        run: az extension add --name containerapp --upgrade --yes
+
       - name: Deploy to Container App
         run: |
-          cd apps/api
           az containerapp up \
             --name zeta-api \
             --resource-group zeta-platform-prod \
-            --source . \
+            --source apps/api \
+            --ingress external \
+            --target-port 8000 \
             --env-vars \
               DATABASE_URL="${{ secrets.DATABASE_URL }}" \
               REDIS_URL="${{ secrets.REDIS_URL }}" \
               OPENAI_API_KEY="${{ secrets.OPENAI_API_KEY }}"
+
+      - name: Health check
+        run: |
+          sleep 15
+          az containerapp show \
+            --name zeta-api \
+            --resource-group zeta-platform-prod \
+            --query "properties.runningStatus" -o tsv

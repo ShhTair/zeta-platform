@@ -13,20 +13,32 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      
+
       - name: Azure Login
-        uses: azure/login@v1
+        uses: azure/login@v2
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
-      
+
+      - name: Install Azure Container Apps extension
+        run: az extension add --name containerapp --upgrade --yes
+
       - name: Deploy to Container App
         run: |
-          cd apps/bot
           az containerapp up \
             --name zeta-telegram-bot \
             --resource-group zeta-platform-prod \
-            --source . \
+            --source apps/bot \
+            --ingress external \
+            --target-port 8080 \
             --env-vars \
               BOT_TOKEN="${{ secrets.TELEGRAM_BOT_TOKEN }}" \
               API_URL="https://zeta-api.ambitiousmushroom-213ad3d3.northeurope.azurecontainerapps.io" \
               OPENAI_API_KEY="${{ secrets.OPENAI_API_KEY }}"
+
+      - name: Health check
+        run: |
+          sleep 15
+          az containerapp show \
+            --name zeta-telegram-bot \
+            --resource-group zeta-platform-prod \
+            --query "properties.runningStatus" -o tsv

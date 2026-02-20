@@ -13,22 +13,34 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      
+
       - name: Azure Login
-        uses: azure/login@v1
+        uses: azure/login@v2
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
-      
+
+      - name: Install Azure Container Apps extension
+        run: az extension add --name containerapp --upgrade --yes
+
       - name: Deploy to Container App
         run: |
-          cd apps/whatsapp-bot
           az containerapp up \
             --name zeta-whatsapp-bot \
             --resource-group zeta-platform-prod \
-            --source . \
+            --source apps/whatsapp-bot \
+            --ingress external \
+            --target-port 8000 \
             --env-vars \
               WHATSAPP_TOKEN="${{ secrets.WHATSAPP_TOKEN }}" \
               WHATSAPP_PHONE_ID="${{ secrets.WHATSAPP_PHONE_ID }}" \
               WHATSAPP_VERIFY_TOKEN="${{ secrets.WHATSAPP_VERIFY_TOKEN }}" \
               API_URL="https://zeta-api.ambitiousmushroom-213ad3d3.northeurope.azurecontainerapps.io" \
               OPENAI_API_KEY="${{ secrets.OPENAI_API_KEY }}"
+
+      - name: Health check
+        run: |
+          sleep 15
+          az containerapp show \
+            --name zeta-whatsapp-bot \
+            --resource-group zeta-platform-prod \
+            --query "properties.runningStatus" -o tsv
