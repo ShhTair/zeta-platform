@@ -73,8 +73,28 @@ completed	failure	Deploy Frontend	Deploy Frontend	2026-02-20 09:52:00
 
 **Workflow Run:** https://github.com/ShhTair/zeta-platform/actions/runs/22220273899
 
-### 2. Missing WhatsApp Secrets
-**Impact:** WhatsApp bot cannot deploy  
+### 2. AZURE_CREDENTIALS is Malformed
+**Impact:** All Azure deployments fail (API, Telegram bot, WhatsApp bot)  
+**Error:** `Login failed with Error: Using auth-type: SERVICE_PRINCIPAL. Not all values are present. Ensure 'client-id' and 'tenant-id' are supplied.`  
+**Fix Required:**
+1. Create new Service Principal with proper format:
+   ```bash
+   az ad sp create-for-rbac \
+     --name "zeta-github-deploy" \
+     --role contributor \
+     --scopes /subscriptions/5d789370-45fe-43a0-a1e4-73c29258fb0d/resourceGroups/zeta-platform-prod \
+     --json-auth
+   ```
+2. Update secret: `gh secret set AZURE_CREDENTIALS < azure-creds.json`
+3. See **[AZURE_CREDENTIALS_FIX.md](./AZURE_CREDENTIALS_FIX.md)** for detailed instructions
+
+**Workflow Runs:**
+- API: https://github.com/ShhTair/zeta-platform/actions/runs/22220733653
+- Telegram: https://github.com/ShhTair/zeta-platform/actions/runs/22220733666
+- WhatsApp: https://github.com/ShhTair/zeta-platform/actions/runs/22220733659
+
+### 3. Missing WhatsApp Secrets
+**Impact:** WhatsApp bot cannot deploy (even after fixing Azure credentials)  
 **Fix Required:**
 1. Get from Meta Business Manager
 2. Add secrets:
