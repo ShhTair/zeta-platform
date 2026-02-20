@@ -1,16 +1,18 @@
 'use client';
 
 import { useAuthStore } from '@/lib/store';
-import { useCities } from '@/lib/queries';
 import { ChevronDown, Search } from 'lucide-react';
 
 export default function Navbar() {
   const { user, selectedCityId, setSelectedCityId } = useAuthStore();
-  const { data: cities } = useCities();
+  
+  // Mock cities for demo
+  const cities = user?.role === 'SUPER_ADMIN' ? [
+    { id: '1', name: 'Almaty', slug: 'almaty', isActive: true },
+    { id: '2', name: 'Astana', slug: 'astana', isActive: true },
+  ] : [];
 
-  const accessibleCities = cities?.filter(city => 
-    user?.role === 'SUPER_ADMIN' || user?.cityAccess.includes(city.id)
-  ) || [];
+  const accessibleCities = cities;
 
   const selectedCity = accessibleCities.find(c => c.id === selectedCityId);
 
