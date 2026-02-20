@@ -1,0 +1,34 @@
+name: Deploy API
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'apps/api/**'
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Azure Login
+        uses: azure/login@v2
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+      
+      - name: Build and deploy Container App
+        run: |
+          cd apps/api
+          az containerapp up \
+            --name zeta-api \
+            --resource-group zeta-platform-prod \
+            --environment zeta-env \
+            --source . \
+            --target-port 8000 \
+            --ingress external \
+            --env-vars \
+              DATABASE_URL="${{ secrets.DATABASE_URL }}" \
+              REDIS_URL="${{ secrets.REDIS_URL }}" \
+              OPENAI_API_KEY="${{ secrets.OPENAI_API_KEY }}"
