@@ -34,11 +34,11 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-white">
-      <div className="w-full max-w-md p-10 bg-white border border-[#DADCE0] rounded-lg shadow-google-md">
+    <div className="min-h-screen flex items-center justify-center bg-gdrive-bg">
+      <div className="w-full max-w-md p-10 bg-gdrive-white border border-gdrive-border rounded-google shadow-google-md">
         <div className="text-center mb-8">
-          <h1 className="text-[24px] font-medium text-[#202124] mb-2">Welcome to ZETA</h1>
-          <p className="text-[#5F6368] text-[14px]">Sign in to your account</p>
+          <h1 className="text-2xl font-medium text-gdrive-text mb-2">Welcome to ZETA</h1>
+          <p className="text-gdrive-secondary">Sign in to your account</p>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-5">
@@ -69,9 +69,9 @@ export default function LoginPage() {
           </Button>
         </form>
 
-        <p className="mt-6 text-center text-[14px] text-[#5F6368]">
+        <p className="mt-6 text-center text-sm text-gdrive-secondary">
           Don't have an account?{' '}
-          <Link href="/register" className="text-[#1A73E8] hover:underline font-medium">
+          <Link href="/register" className="text-gdrive-blue hover:underline font-medium">
             Register
           </Link>
         </p>

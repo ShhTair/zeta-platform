@@ -1,0 +1,193 @@
+# WhatsApp Message Templates
+# These MUST be pre-approved in Meta Business Manager before use
+# https://business.facebook.com/wa/manage/message-templates/
+
+templates:
+  # Price Alert Template
+  - name: price_alert
+    category: UTILITY
+    language: ru
+    status: PENDING_APPROVAL
+    description: "Notify user when product price drops"
+    components:
+      - type: HEADER
+        format: TEXT
+        text: "🔔 Цена снизилась!"
+      
+      - type: BODY
+        text: |
+          Отличные новости! Цена на товар *{{1}}* (арт. {{2}}) снизилась с {{3}} ₸ до {{4}} ₸!
+          
+          Экономия: {{5}} ₸ ({{6}}%)
+          
+          Товар доступен на сайте. Успейте оформить заказ!
+        example:
+          body_text:
+            - ["Диван угловой серый", "SOFA-123", "120000", "95000", "25000", "20"]
+      
+      - type: BUTTONS
+        buttons:
+          - type: URL
+            text: "Посмотреть товар"
+            url: "https://zeta-furniture.kz/products/{{1}}"
+          - type: PHONE_NUMBER
+            text: "Позвонить менеджеру"
+            phone_number: "+77001234567"
+  
+  # New Products Template
+  - name: new_products_notification
+    category: MARKETING
+    language: ru
+    status: PENDING_APPROVAL
+    description: "Notify users about new products matching their saved searches"
+    components:
+      - type: HEADER
+        format: TEXT
+        text: "✨ Новинки для вас!"
+      
+      - type: BODY
+        text: |
+          Поступили новые товары по вашему запросу "{{1}}":
+          
+          • {{2}}
+          • {{3}}
+          • {{4}}
+          
+          Всего {{5}} новых вариантов. Посмотреть?
+        example:
+          body_text:
+            - ["диваны серые", "Диван CLOUD серый", "Диван MODERN серый", "Диван COMFORT серый", "5"]
+      
+      - type: BUTTONS
+        buttons:
+          - type: QUICK_REPLY
+            text: "Показать все"
+  
+  # Order Confirmation Template
+  - name: order_confirmation
+    category: UTILITY
+    language: ru
+    status: PENDING_APPROVAL
+    description: "Confirm order placement"
+    components:
+      - type: HEADER
+        format: TEXT
+        text: "✅ Заказ подтверждён"
+      
+      - type: BODY
+        text: |
+          Ваш заказ №{{1}} успешно оформлен!
+          
+          Товар: {{2}}
+          Количество: {{3}}
+          Сумма: {{4}} ₸
+          
+          Менеджер свяжется с вами в течение часа для уточнения деталей доставки.
+        example:
+          body_text:
+            - ["12345", "Диван угловой CLOUD", "1", "95000"]
+      
+      - type: BUTTONS
+        buttons:
+          - type: URL
+            text: "Отследить заказ"
+            url: "https://zeta-furniture.kz/orders/{{1}}"
+  
+  # Order Status Update Template
+  - name: order_status_update
+    category: UTILITY
+    language: ru
+    status: PENDING_APPROVAL
+    description: "Update order status"
+    components:
+      - type: HEADER
+        format: TEXT
+        text: "📦 Обновление заказа"
+      
+      - type: BODY
+        text: |
+          Заказ №{{1}}: {{2}}
+          
+          {{3}}
+          
+          Ожидаемая дата доставки: {{4}}
+        example:
+          body_text:
+            - ["12345", "В пути", "Ваш заказ отправлен и уже едет к вам!", "2026-02-25"]
+      
+      - type: BUTTONS
+        buttons:
+          - type: PHONE_NUMBER
+            text: "Связаться с курьером"
+            phone_number: "+77001234567"
+  
+  # Manager Response Template
+  - name: manager_response
+    category: UTILITY
+    language: ru
+    status: PENDING_APPROVAL
+    description: "Manager replies to user inquiry after 24h window"
+    components:
+      - type: HEADER
+        format: TEXT
+        text: "💬 Ответ менеджера"
+      
+      - type: BODY
+        text: |
+          Здравствуйте!
+          
+          Отвечаю на ваш вопрос о товаре {{1}}:
+          
+          {{2}}
+          
+          Если остались вопросы - звоните или пишите!
+        example:
+          body_text:
+            - ["Диван CLOUD", "Товар в наличии в нашем шоуруме в Талдыкоргане. Доставка возможна на следующей неделе. Цена: 95000 ₸ (скидка 20% действует до конца месяца)."]
+      
+      - type: BUTTONS
+        buttons:
+          - type: PHONE_NUMBER
+            text: "Позвонить"
+            phone_number: "+77001234567"
+          - type: QUICK_REPLY
+            text: "Оформить заказ"
+  
+  # Kazakh Language Templates
+  - name: price_alert_kz
+    category: UTILITY
+    language: kk
+    status: PENDING_APPROVAL
+    description: "Price alert in Kazakh"
+    components:
+      - type: HEADER
+        format: TEXT
+        text: "🔔 Баға төмендеді!"
+      
+      - type: BODY
+        text: |
+          Жақсы жаңалық! *{{1}}* (арт. {{2}}) тауарының бағасы {{3}} ₸-ден {{4}} ₸-ге дейін төмендеді!
+          
+          Үнем: {{5}} ₸ ({{6}}%)
+          
+          Тауар сайтта қолжетімді. Тапсырысты рәсімдеуге асығыңыз!
+        example:
+          body_text:
+            - ["Бұрышты диван сұр", "SOFA-123", "120000", "95000", "25000", "20"]
+      
+      - type: BUTTONS
+        buttons:
+          - type: URL
+            text: "Тауарды қарау"
+            url: "https://zeta-furniture.kz/products/{{1}}"
+          - type: PHONE_NUMBER
+            text: "Менеджерге қоңырау шалу"
+            phone_number: "+77001234567"
+
+# Template Usage Notes:
+# 1. All templates MUST be approved in Meta Business Manager
+# 2. Templates can only be sent OUTSIDE 24-hour conversation window
+# 3. Within 24h window, use regular messages (no approval needed)
+# 4. Template parameters {{1}}, {{2}} are populated at send time
+# 5. URL buttons must use HTTPS
+# 6. Phone numbers must be in international format

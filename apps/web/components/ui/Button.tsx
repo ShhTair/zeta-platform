@@ -12,19 +12,19 @@ export default function Button({
   children,
   ...props 
 }: ButtonProps) {
-  const baseClasses = 'font-medium transition-all duration-150 disabled:opacity-50 disabled:cursor-not-allowed inline-flex items-center justify-center';
+  const baseClasses = 'font-medium transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed inline-flex items-center justify-center gap-2';
   
   const variantClasses = {
-    primary: 'bg-[#1A73E8] hover:bg-[#1765CC] active:bg-[#1557B0] text-white shadow-sm hover:shadow-md',
-    secondary: 'border border-[#DADCE0] bg-white hover:bg-[#F1F3F4] text-[#202124] hover:border-[#DADCE0]',
-    text: 'text-[#5F6368] hover:bg-[#F1F3F4] hover:text-[#202124]',
-    danger: 'bg-[#D93025] hover:bg-[#C5221F] text-white shadow-sm',
+    primary: 'bg-gdrive-blue hover:bg-gdrive-blue-hover active:bg-gdrive-blue-active text-white shadow-google-sm hover:shadow-google-md',
+    secondary: 'border border-gdrive-border bg-gdrive-white hover:bg-gdrive-gray-hover text-gdrive-text hover:shadow-google-sm',
+    text: 'text-gdrive-secondary hover:bg-gdrive-gray-hover hover:text-gdrive-text',
+    danger: 'bg-gdrive-danger hover:bg-[#C5221F] active:bg-[#B31412] text-white shadow-google-sm',
   };
 
   const sizeClasses = {
-    sm: 'px-3 py-1.5 text-[13px] rounded-md',
-    md: 'px-4 py-2 text-[14px] rounded-lg',
-    lg: 'px-6 py-2.5 text-[15px] rounded-lg',
+    sm: 'px-3 py-1.5 text-xs rounded-google-sm',
+    md: 'px-4 py-2 text-sm rounded-google-sm',
+    lg: 'px-6 py-2.5 text-base rounded-google-sm',
   };
 
   return (

@@ -1,23 +1,27 @@
 @import url('https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;700&family=Roboto:wght@400;500;700&display=swap');
+@import url('https://fonts.googleapis.com/icon?family=Material+Icons');
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 :root {
-  /* Google Drive Colors */
-  --background: #FFFFFF;
-  --sidebar-bg: #F9FAFB;
-  --text-primary: #202124;
-  --text-secondary: #5F6368;
-  --border: #DADCE0;
-  --hover: #F1F3F4;
-  --primary: #1A73E8;
-  --active-item: #E8F0FE;
+  /* Google Drive Colors - Exact Match */
+  --gdrive-bg: #F8F9FA;
+  --gdrive-white: #FFFFFF;
+  --gdrive-blue: #1A73E8;
+  --gdrive-blue-hover: #1765CC;
+  --gdrive-blue-active: #1557B0;
+  --gdrive-hover: #E8F0FE;
+  --gdrive-gray-hover: #F1F3F4;
+  --gdrive-border: #DADCE0;
+  --gdrive-text: #202124;
+  --gdrive-secondary: #5F6368;
   
-  /* Shadows */
-  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.12);
-  --shadow-md: 0 1px 2px rgba(0, 0, 0, 0.05), 0 2px 4px rgba(0, 0, 0, 0.08);
+  /* Google Drive Shadows */
+  --shadow-sm: 0 1px 2px 0 rgba(60,64,67,0.3), 0 1px 3px 1px rgba(60,64,67,0.15);
+  --shadow-md: 0 1px 3px 0 rgba(60,64,67,0.3), 0 4px 8px 3px rgba(60,64,67,0.15);
+  --shadow-lg: 0 2px 6px 2px rgba(60,64,67,0.15), 0 8px 24px 4px rgba(60,64,67,0.15);
 }
 
 * {
@@ -26,9 +30,15 @@
   margin: 0;
 }
 
+html,
 body {
-  color: var(--text-primary);
-  background: var(--background);
+  max-width: 100vw;
+  overflow-x: hidden;
+}
+
+body {
+  color: var(--gdrive-text);
+  background: var(--gdrive-bg);
   font-family: 'Google Sans', 'Roboto', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   font-size: 14px;
   line-height: 1.5;
@@ -36,16 +46,10 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
-@layer utilities {
-  .text-balance {
-    text-wrap: balance;
-  }
-}
-
-/* Scrollbar styling */
+/* Google Drive-style scrollbar */
 ::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
+  width: 12px;
+  height: 12px;
 }
 
 ::-webkit-scrollbar-track {
@@ -54,9 +58,38 @@ body {
 
 ::-webkit-scrollbar-thumb {
   background: #DADCE0;
-  border-radius: 4px;
+  border-radius: 8px;
+  border: 3px solid transparent;
+  background-clip: content-box;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #5F6368;
+  background: #BDC1C6;
+  background-clip: content-box;
+}
+
+/* Focus styles matching Google Drive */
+button:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+  outline: 2px solid var(--gdrive-blue);
+  outline-offset: 2px;
+}
+
+/* Selection styling */
+::selection {
+  background: var(--gdrive-hover);
+  color: var(--gdrive-blue);
+}
+
+::-moz-selection {
+  background: var(--gdrive-hover);
+  color: var(--gdrive-blue);
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
 }

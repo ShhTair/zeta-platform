@@ -1,0 +1,241 @@
+================================================================================
+ZETA PLATFORM INFRASTRUCTURE VERIFICATION
+================================================================================
+
+Date: 2026-02-20 06:26 UTC
+Status: ⚠️ INCOMPLETE - Critical Infrastructure Outage
+
+================================================================================
+EXECUTIVE SUMMARY
+================================================================================
+
+🔴 CRITICAL ISSUE: Azure VM (20.234.16.216) is completely unreachable
+
+The backend infrastructure has been offline for approximately 17 hours.
+All network connections to the VM timeout on all ports (SSH, HTTP, HTTPS).
+
+IMPACT:
+  • Backend API unreachable
+  • Database inaccessible
+  • Telegram bot not receiving messages
+  • End-to-end testing blocked
+
+WORKING:
+  ✅ Frontend (Vercel) is live and configured correctly
+  ✅ Database schema and data exist (last verified 2026-02-19)
+  ✅ Telegram bot API responds (but webhook not set)
+
+================================================================================
+COMPONENT STATUS
+================================================================================
+
+1. Database (PostgreSQL 14)                              ❌ UNREACHABLE
+   - Location: Azure VM localhost:5432
+   - Database: zeta_platform
+   - Tables: 11 (products, users, cities, etc.)
+   - Products: 37,318 rows
+   - Last verified: 2026-02-19 12:54 UTC
+
+2. Cache (Redis 6.0)                                     ❌ UNREACHABLE
+   - Location: Azure VM localhost:6379
+   - Keys: 0 (empty - possible issue)
+   - Last verified: 2026-02-19 12:54 UTC
+
+3. Backend API (FastAPI)                                 ❌ UNREACHABLE
+   - URL: http://20.234.16.216:8000
+   - Service: zeta-api.service (systemd)
+   - Last running: 2026-02-19 12:54 UTC (uptime: 17h)
+   - Health endpoint: Timeout
+   - Products endpoint: Timeout
+   - Cities endpoint: Timeout
+
+4. Frontend (Next.js)                                    ✅ ONLINE
+   - URL: https://web-ten-sigma-30.vercel.app
+   - Status: HTTP 200
+   - Environment variables: Configured
+     • NEXT_PUBLIC_API_URL
+     • VITE_WS_URL
+     • VITE_API_URL
+     • OPENAI_API_KEY
+
+5. Telegram Bot (@zeta_taldykorgan_bot)                  ❌ WEBHOOK NOT SET
+   - Bot exists: Yes
+   - Webhook URL: Empty (not configured)
+   - Service: zeta-bot.service (status unknown)
+   - Pending updates: 0
+
+================================================================================
+CRITICAL ISSUES
+================================================================================
+
+Issue #1: Azure VM Unreachable (CRITICAL)
+----------
+  Severity: 🔴 CRITICAL
+  Component: Infrastructure
+  Impact: Complete backend outage (~17 hours)
+  Diagnosis: All ports timeout - VM likely stopped or NSG blocking traffic
+  
+  IMMEDIATE ACTIONS:
+  1. Check Azure Portal → Virtual Machines → VM status
+  2. If stopped: Start the VM
+  3. If running: Check Network Security Group (NSG) rules
+  4. If deallocated: Restart and verify billing
+  5. After online: Run ./verify-quick.sh
+
+Issue #2: Telegram Bot Webhook Not Configured (CRITICAL)
+----------
+  Severity: 🔴 CRITICAL
+  Component: Telegram Bot
+  Impact: Bot not receiving user messages
+  
+  FIX (after VM is online):
+  curl -X POST "https://api.telegram.org/bot7750680653:AAHs4Xe9gTwufOjNFLNf1SuMoy_cN_2sOzM/setWebhook" \
+    -d "url=https://20.234.16.216:8443/webhook"
+
+Issue #3: Redis Cache Empty (WARNING)
+----------
+  Severity: ⚠️ WARNING
+  Component: Redis
+  Impact: No caching, possible performance degradation
+  Investigation: Verify cache usage in API code
+
+Issue #4: Security Scanning Activity (WARNING)
+----------
+  Severity: ⚠️ WARNING
+  Component: Backend API
+  Impact: Resource usage from automated vulnerability scanners
+  Evidence: API logs show phpunit/ThinkPHP exploit attempts
+  Fix: Add rate limiting middleware to FastAPI
+
+================================================================================
+NETWORK DIAGNOSTICS
+================================================================================
+
+All connection attempts to 20.234.16.216 timeout:
+  • ping                           → Timeout (3s)
+  • SSH (port 22)                  → Timeout (5s)
+  • HTTP (port 8000)               → Timeout (10s)
+  • HTTPS (port 443)               → Timeout (3s)
+  • Webhook (port 8443)            → Not tested (VM down)
+
+Possible causes:
+  1. VM stopped/deallocated in Azure Portal
+  2. Network Security Group (NSG) blocking all inbound traffic
+  3. VM firewall (ufw) misconfiguration
+  4. Azure subscription/billing issue
+  5. VM crashed or frozen
+
+================================================================================
+VERIFICATION PROGRESS
+================================================================================
+
+Completed (40%):
+  ✅ Frontend deployment and configuration
+  ✅ Frontend environment variables
+  ✅ Database schema (from previous connection)
+  ✅ Database data counts (from previous connection)
+  ✅ Telegram bot existence
+
+Blocked (60%):
+  ❌ Database connectivity test
+  ❌ Redis connectivity test
+  ❌ Backend API health check
+  ❌ API endpoints testing
+  ❌ Bot webhook configuration
+  ❌ Frontend → Backend integration
+  ❌ Bot → Backend integration
+  ❌ End-to-end flow testing
+  ❌ User registration test
+  ❌ Product search test
+
+================================================================================
+NEXT STEPS (PRIORITY ORDER)
+================================================================================
+
+IMMEDIATE (Next 30 minutes):
+  1. ✅ Go to Azure Portal (portal.azure.com)
+  2. ✅ Navigate to Virtual Machines
+  3. ✅ Find VM: zeta-vm (IP: 20.234.16.216)
+  4. ✅ Check status: Running / Stopped / Deallocated
+  5. ✅ If stopped: Click "Start" button
+  6. ✅ Wait 2-3 minutes for startup
+  7. ✅ Run: ./verify-quick.sh
+  8. ✅ Set Telegram webhook (command in Issue #2)
+
+SHORT-TERM (Today):
+  • Add Azure Monitor alert: "VM stopped"
+  • Add Azure Monitor alert: "HTTP 5xx errors"
+  • Set up external monitoring (UptimeRobot)
+  • Review NSG rules - ensure ports are open:
+    - 22 (SSH)
+    - 80 (HTTP)
+    - 443 (HTTPS)
+    - 8000 (API)
+    - 8443 (Bot webhook)
+
+MEDIUM-TERM (This Week):
+  • Investigate Redis cache usage
+  • Add rate limiting to API
+  • Configure SSL/TLS with Let's Encrypt
+  • Set up automated PostgreSQL backups
+  • Review API logs for security issues
+  • Add health check monitoring
+
+================================================================================
+FILES CREATED
+================================================================================
+
+1. INFRASTRUCTURE_MAP.md       - Detailed infrastructure documentation
+2. VERIFICATION_REPORT.md      - Full verification report with diagnostics
+3. VERIFICATION_SUMMARY.txt    - This file (quick reference)
+4. verify-quick.sh             - Quick verification script
+
+Usage:
+  cd /home/tair/.openclaw/workspace/zeta-platform
+  ./verify-quick.sh
+
+================================================================================
+CONTACT & ESCALATION
+================================================================================
+
+If VM doesn't start:
+  1. Check Azure subscription billing
+  2. Check Azure Service Health
+  3. Contact Azure Support
+  4. Consider restoring from backup
+
+If webhook fails to set:
+  1. Verify port 8443 is open in NSG
+  2. Check zeta-bot service: sudo systemctl status zeta-bot
+  3. Check bot logs: sudo journalctl -u zeta-bot -n 100
+  4. Verify SSL certificate for webhook
+
+================================================================================
+TIME ESTIMATE
+================================================================================
+
+If VM just needs restart:        15-30 minutes
+If NSG needs reconfiguration:    30-60 minutes
+If VM needs rebuild:             2-4 hours
+If database restore needed:      4-8 hours
+
+================================================================================
+CONCLUSION
+================================================================================
+
+The ZETA platform frontend is operational, but the entire backend
+infrastructure is offline due to the Azure VM being unreachable.
+
+This is a CRITICAL outage affecting all backend functionality:
+  • Product listings
+  • User authentication
+  • Telegram bot interactions
+  • Database queries
+
+PRIORITY: Restore VM connectivity immediately.
+
+After VM is online, complete verification will take ~10 minutes.
+
+================================================================================
+Generated: 2026-02-20 06:26 UTC by OpenClaw Infrastructure Verification
+================================================================================

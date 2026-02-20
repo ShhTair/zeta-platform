@@ -2,15 +2,15 @@ FROM python:3.11-slim
 
 WORKDIR /app
 
-# Install dependencies
-COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
+# Install system dependencies for image processing
+RUN apt-get update && apt-get install -y \
+    tesseract-ocr \
+    libtesseract-dev \
+    && rm -rf /var/lib/apt/lists/*
 
-# Copy application
+COPY requirements.txt requirements-integrations.txt ./
+RUN pip install --no-cache-dir -r requirements.txt -r requirements-integrations.txt
+
 COPY . .
 
-# Expose port
-EXPOSE 8080
-
-# Run bot
 CMD ["python", "main.py"]

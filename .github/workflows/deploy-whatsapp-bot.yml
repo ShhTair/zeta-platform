@@ -1,10 +1,10 @@
-name: Deploy Backend API
+name: Deploy WhatsApp Bot
 
 on:
   push:
     branches: [main]
     paths:
-      - 'apps/api/**'
+      - 'apps/whatsapp-bot/**'
   workflow_dispatch:
 
 jobs:
@@ -20,12 +20,14 @@ jobs:
       
       - name: Deploy to Container App
         run: |
-          cd apps/api
+          cd apps/whatsapp-bot
           az containerapp up \
-            --name zeta-api \
+            --name zeta-whatsapp-bot \
             --resource-group zeta-platform-prod \
             --source . \
             --env-vars \
-              DATABASE_URL="${{ secrets.DATABASE_URL }}" \
-              REDIS_URL="${{ secrets.REDIS_URL }}" \
+              WHATSAPP_TOKEN="${{ secrets.WHATSAPP_TOKEN }}" \
+              WHATSAPP_PHONE_ID="${{ secrets.WHATSAPP_PHONE_ID }}" \
+              WHATSAPP_VERIFY_TOKEN="${{ secrets.WHATSAPP_VERIFY_TOKEN }}" \
+              API_URL="https://zeta-api.ambitiousmushroom-213ad3d3.northeurope.azurecontainerapps.io" \
               OPENAI_API_KEY="${{ secrets.OPENAI_API_KEY }}"

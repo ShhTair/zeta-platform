@@ -60,17 +60,17 @@ export default function Sidebar() {
   ];
 
   return (
-    <div className="w-64 bg-white border-r border-[#DADCE0] flex flex-col shadow-sm">
-      {/* Logo/Brand Section */}
-      <div className="px-6 py-5 border-b border-[#DADCE0]">
-        <h1 className="text-[22px] font-medium text-[#202124]">ZETA Platform</h1>
+    <aside className="w-64 bg-gdrive-white h-screen sticky top-0 flex flex-col border-r border-gdrive-border">
+      {/* Logo/Brand Section - Google Drive style */}
+      <div className="px-4 py-5 border-b border-gdrive-border">
+        <h1 className="text-2xl font-medium text-gdrive-text tracking-tight">ZETA Platform</h1>
         {user && (
-          <p className="text-sm text-[#5F6368] mt-1">{user.email}</p>
+          <p className="text-sm text-gdrive-secondary mt-1 truncate">{user.email}</p>
         )}
       </div>
 
-      {/* Navigation */}
-      <nav className="flex-1 px-3 py-2">
+      {/* Navigation - Google Drive style */}
+      <nav className="flex-1 px-3 py-4 overflow-y-auto">
         <div className="space-y-1">
           {navItems.filter(item => item.show).map((item) => {
             const Icon = item.icon;
@@ -80,22 +80,23 @@ export default function Sidebar() {
               <Link
                 key={item.href}
                 href={item.href}
-                className={`flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all duration-150 group ${
-                  isActive
-                    ? 'bg-[#E8F0FE] text-[#1A73E8]'
-                    : 'text-[#5F6368] hover:bg-[#F1F3F4]'
-                }`}
+                className={`
+                  flex items-center gap-4 px-3 py-2.5 rounded-google 
+                  transition-all duration-200 group
+                  ${isActive
+                    ? 'bg-gdrive-hover text-gdrive-blue font-medium'
+                    : 'text-gdrive-text hover:bg-gdrive-gray-hover'
+                  }
+                `}
               >
                 <Icon 
                   size={20} 
-                  className={`transition-colors ${
-                    isActive ? 'text-[#1A73E8]' : 'text-[#5F6368] group-hover:text-[#202124]'
+                  className={`flex-shrink-0 transition-colors ${
+                    isActive ? 'text-gdrive-blue' : 'text-gdrive-secondary group-hover:text-gdrive-text'
                   }`}
                   strokeWidth={2}
                 />
-                <span className={`text-[14px] font-medium ${
-                  isActive ? 'text-[#1A73E8]' : 'text-[#202124]'
-                }`}>
+                <span className="text-sm truncate">
                   {item.label}
                 </span>
               </Link>
@@ -104,20 +105,24 @@ export default function Sidebar() {
         </div>
       </nav>
 
-      {/* Logout Section */}
-      <div className="px-3 py-3 border-t border-[#DADCE0]">
+      {/* Logout Section - Google Drive style */}
+      <div className="px-3 py-4 border-t border-gdrive-border">
         <button
           onClick={handleLogout}
-          className="flex items-center gap-3 px-3 py-2.5 w-full rounded-lg text-[#5F6368] hover:bg-[#F1F3F4] transition-all duration-150 group"
+          className="
+            flex items-center gap-4 px-3 py-2.5 w-full rounded-google
+            text-gdrive-text hover:bg-gdrive-gray-hover 
+            transition-all duration-200 group
+          "
         >
           <LogOut 
             size={20} 
-            className="text-[#5F6368] group-hover:text-[#202124]"
+            className="flex-shrink-0 text-gdrive-secondary group-hover:text-gdrive-text"
             strokeWidth={2}
           />
-          <span className="text-[14px] font-medium text-[#202124]">Logout</span>
+          <span className="text-sm">Logout</span>
         </button>
       </div>
-    </div>
+    </aside>
   );
 }

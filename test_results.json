@@ -1,0 +1,8 @@
+{
+  "test_start": "$(date -Iseconds)",
+  "backend_api": {},
+  "bot_features": {},
+  "admin_panel": {},
+  "advanced": {},
+  "integrations": {}
+}

@@ -15,15 +15,23 @@ export default function Navbar() {
   const selectedCity = accessibleCities.find(c => c.id === selectedCityId);
 
   return (
-    <div className="h-16 bg-white border-b border-[#DADCE0] flex items-center justify-between px-6 shadow-sm">
+    <header className="h-16 bg-gdrive-white border-b border-gdrive-border flex items-center justify-between px-6 sticky top-0 z-10">
       {/* Left section - City selector */}
-      <div className="flex items-center gap-6">
+      <div className="flex items-center gap-4">
         {accessibleCities.length > 0 && (
           <div className="relative">
             <select
               value={selectedCityId || ''}
               onChange={(e) => setSelectedCityId(e.target.value || null)}
-              className="appearance-none bg-white text-[#202124] px-4 py-2 pr-10 rounded-lg border border-[#DADCE0] hover:bg-[#F1F3F4] focus:outline-none focus:border-[#1A73E8] focus:ring-1 focus:ring-[#1A73E8] cursor-pointer text-[14px] font-medium transition-all"
+              className="
+                appearance-none bg-gdrive-white text-gdrive-text 
+                px-4 py-2 pr-10 rounded-google-sm 
+                border border-gdrive-border 
+                hover:bg-gdrive-gray-hover hover:shadow-google-sm
+                focus:outline-none focus:border-gdrive-blue focus:shadow-google-sm
+                cursor-pointer text-sm font-medium 
+                transition-all duration-200
+              "
             >
               <option value="">Select City</option>
               {accessibleCities.map(city => (
@@ -33,15 +41,15 @@ export default function Navbar() {
               ))}
             </select>
             <ChevronDown 
-              className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-[#5F6368]" 
+              className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-gdrive-secondary" 
               size={16} 
             />
           </div>
         )}
         {selectedCity && (
-          <div className="flex items-center gap-2 text-sm">
-            <span className={`w-2 h-2 rounded-full ${selectedCity.isActive ? 'bg-green-500' : 'bg-red-500'}`}></span>
-            <span className="text-[#5F6368] text-[13px]">
+          <div className="flex items-center gap-2">
+            <span className={`w-2 h-2 rounded-full ${selectedCity.isActive ? 'bg-gdrive-success' : 'bg-gdrive-danger'}`}></span>
+            <span className="text-xs text-gdrive-secondary">
               {selectedCity.isActive ? 'Active' : 'Inactive'}
             </span>
           </div>
@@ -51,29 +59,39 @@ export default function Navbar() {
       {/* Center - Search bar (Google Drive style) */}
       <div className="flex-1 max-w-2xl mx-8">
         <div className="relative">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-[#5F6368]" size={20} />
+          <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gdrive-secondary" size={20} />
           <input
             type="text"
             placeholder="Search in ZETA Platform"
-            className="w-full bg-[#F1F3F4] text-[#202124] pl-11 pr-4 py-2.5 rounded-lg border-0 focus:outline-none focus:bg-white focus:shadow-google-md transition-all text-[14px]"
+            className="
+              w-full bg-gdrive-bg text-gdrive-text 
+              pl-12 pr-4 py-2.5 rounded-google
+              border-0 
+              focus:outline-none focus:bg-gdrive-white focus:shadow-google-md 
+              transition-all duration-200 
+              placeholder:text-gdrive-secondary
+            "
           />
         </div>
       </div>
 
       {/* Right section - User info */}
       <div className="flex items-center gap-4">
-        <div className="text-sm flex items-center gap-2">
-          <span className="text-[#5F6368] text-[13px]">Role:</span>
-          <span className="text-[#202124] font-medium text-[13px] bg-[#F1F3F4] px-3 py-1 rounded-full">
+        <div className="flex items-center gap-2">
+          <span className="text-xs text-gdrive-secondary">Role:</span>
+          <span className="text-xs text-gdrive-text font-medium bg-gdrive-gray-hover px-3 py-1.5 rounded-full">
             {user?.role.replace('_', ' ')}
           </span>
         </div>
         
         {/* User Avatar (Google Drive style) */}
-        <div className="w-8 h-8 rounded-full bg-[#1A73E8] flex items-center justify-center text-white text-sm font-medium">
+        <div 
+          className="w-9 h-9 rounded-full bg-gdrive-blue flex items-center justify-center text-white text-sm font-medium cursor-pointer hover:shadow-google-sm transition-shadow"
+          title={user?.email}
+        >
           {user?.email?.charAt(0).toUpperCase() || 'U'}
         </div>
       </div>
-    </div>
+    </header>
   );
 }
