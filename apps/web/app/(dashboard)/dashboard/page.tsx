@@ -1,19 +1,19 @@
 'use client';
 
 import { useAuthStore } from '@/lib/store';
-import { useCities } from '@/lib/queries';
 import Card from '@/components/ui/Card';
-import { Building2, Users, Bot, AlertCircle } from 'lucide-react';
+import { Building2, Users, Bot, AlertCircle, CheckCircle } from 'lucide-react';
 
 export default function DashboardPage() {
-  const { user, selectedCityId } = useAuthStore();
-  const { data: cities } = useCities();
+  const { user } = useAuthStore();
+  
+  // Mock data for client-side demo
+  const accessibleCities = user?.role === 'SUPER_ADMIN' ? [
+    { id: '1', name: 'Almaty', slug: 'almaty', isActive: true, createdAt: new Date().toISOString() },
+    { id: '2', name: 'Astana', slug: 'astana', isActive: true, createdAt: new Date().toISOString() },
+  ] : [];
 
-  const accessibleCities = cities?.filter(city => 
-    user?.role === 'SUPER_ADMIN' || user?.cityAccess.includes(city.id)
-  ) || [];
-
-  const selectedCity = accessibleCities.find(c => c.id === selectedCityId);
+  const selectedCity = accessibleCities[0]; // Default to first city for demo
 
   return (
     <div className="space-y-8">
@@ -64,15 +64,15 @@ export default function DashboardPage() {
         </Card>
       </div>
 
-      {/* Warning Banner - Google Drive style */}
-      {!selectedCityId && accessibleCities.length > 0 && (
-        <Card className="border-gdrive-warning bg-gdrive-warning-bg border-l-4">
+      {/* Success Banner - Demo Mode */}
+      {accessibleCities.length > 0 && (
+        <Card className="border-gdrive-success bg-gdrive-success-bg border-l-4">
           <div className="flex items-start gap-3">
-            <AlertCircle size={20} className="text-gdrive-warning flex-shrink-0 mt-0.5" />
+            <CheckCircle size={20} className="text-gdrive-success flex-shrink-0 mt-0.5" />
             <div>
-              <h3 className="font-medium text-gdrive-text">No City Selected</h3>
+              <h3 className="font-medium text-gdrive-text">Welcome to ZETA Platform</h3>
               <p className="text-sm text-gdrive-secondary mt-1">
-                Please select a city from the dropdown in the navigation bar to access city-specific features.
+                You're logged in as {user?.name}. This is a demo dashboard with mock data.
               </p>
             </div>
           </div>
